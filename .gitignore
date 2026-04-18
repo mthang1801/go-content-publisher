@@ -6,4 +6,4 @@ coverage/
 *.out
 *.test
 *.local
-
+config/.env
