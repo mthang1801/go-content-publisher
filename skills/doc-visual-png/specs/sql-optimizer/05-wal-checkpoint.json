@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "WAL & Checkpoint",
+  "subtitle": "Write-ahead log guarantees durability, checkpoint flushes dirty pages",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "WAL Write",
+      "tag": "01",
+      "bullets": [
+        "Every change → WAL record first",
+        "Sequential write — very fast",
+        "Guarantees crash recovery",
+        "fsync ensures durability"
+      ]
+    },
+    {
+      "heading": "Dirty Pages",
+      "tag": "02",
+      "bullets": [
+        "Modified pages stay in shared_buffers",
+        "Marked dirty, not yet on disk",
+        "Background writer flushes gradually",
+        "WAL protects against crash"
+      ]
+    },
+    {
+      "heading": "Checkpoint",
+      "tag": "03",
+      "bullets": [
+        "Flushes ALL dirty pages to disk",
+        "Creates recovery point",
+        "Triggered by time or WAL volume",
+        "I/O spike if too infrequent"
+      ]
+    },
+    {
+      "heading": "Crash Recovery",
+      "tag": "04",
+      "bullets": [
+        "Replay WAL from last checkpoint",
+        "Restore consistent state",
+        "More WAL = longer recovery",
+        "checkpoint_timeout controls interval"
+      ]
+    }
+  ],
+  "footer": "WAL ensures no data loss. Checkpoint frequency = trade-off between I/O smoothness and recovery time.",
+  "output_path": "assets/sql/optimizer/pictures/05-wal-checkpoint-workflow.png"
+}

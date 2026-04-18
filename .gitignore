@@ -1,0 +1,9 @@
+.superpowers/
+tmp/
+dist/
+coverage/
+*.log
+*.out
+*.test
+*.local
+

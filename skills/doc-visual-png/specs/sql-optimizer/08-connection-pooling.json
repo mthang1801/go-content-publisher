@@ -1,0 +1,50 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "Connection Pooling",
+  "subtitle": "Direct connection vs PgBouncer modes — choose the right pool strategy",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Session Pooling",
+      "tag": "Safe",
+      "bullets": [
+        "1 client = 1 server connection for session",
+        "Supports prepared statements, LISTEN",
+        "Lowest sharing — connections stay reserved",
+        "Use: legacy apps, LISTEN/NOTIFY"
+      ]
+    },
+    {
+      "heading": "Transaction Pooling",
+      "tag": "Default",
+      "bullets": [
+        "Connection returned after each transaction",
+        "Best balance: sharing + compatibility",
+        "No cross-txn prepared statements",
+        "Use: most web apps, microservices"
+      ]
+    },
+    {
+      "heading": "Statement Pooling",
+      "tag": "Aggressive",
+      "bullets": [
+        "Connection returned after each statement",
+        "Maximum connection sharing",
+        "No multi-statement transactions",
+        "Use: simple read-only workloads"
+      ]
+    }
+  ],
+  "footer": "Transaction pooling is the safest default. Session pooling wastes connections. Statement pooling breaks transactions.",
+  "output_path": "assets/sql/optimizer/pictures/08-connection-pooling-compare.png"
+}

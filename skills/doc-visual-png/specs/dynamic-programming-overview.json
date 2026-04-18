@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Dynamic Programming",
+  "subtitle": "Phân loại theo state structure",
+  "eyebrow": "LeetCode Family 07",
+  "panels": [
+    {
+      "heading": "1D DP",
+      "tag": "O(n)",
+      "bullets": [
+        "Fibonacci, House Robber, Stairs",
+        "dp[i] chỉ phụ thuộc dp[i-1], dp[i-2]",
+        "Signal: count ways, max/min cost"
+      ]
+    },
+    {
+      "heading": "2D DP / Grid",
+      "tag": "O(n×m)",
+      "bullets": [
+        "LCS, edit distance, unique paths",
+        "State cần 2 chiều",
+        "Signal: two sequences, grid path"
+      ]
+    },
+    {
+      "heading": "Knapsack",
+      "tag": "O(n×W)",
+      "bullets": [
+        "0/1 vs unbounded vs bounded",
+        "Chọn / không chọn item",
+        "Signal: partition, coin change, subset sum"
+      ]
+    },
+    {
+      "heading": "Sequence DP",
+      "tag": "O(n²) / O(n log n)",
+      "bullets": [
+        "LIS, palindrome, word break",
+        "State gắn với index hoặc cặp biên",
+        "Signal: longest increasing, palindromic"
+      ]
+    }
+  ],
+  "footer": "DP = state + transition + base case + fill order. Sai một trong bốn thứ, bảng DP chỉ là bảng số vô nghĩa.",
+  "output_path": "assets/leet-codes/images/dynamic-programming-overview.png"
+}

@@ -1,0 +1,80 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Indexing Strategies",
+  "subtitle": "Choose the right index type for the query pattern",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "B-tree",
+      "tag": "Default",
+      "bullets": [
+        "Equality and range queries",
+        "ORDER BY, UNIQUE constraints",
+        "Most common — use unless reason not to",
+        "Supports: =, <, >, BETWEEN, IN"
+      ]
+    },
+    {
+      "heading": "GIN",
+      "tag": "Composite",
+      "bullets": [
+        "JSONB containment (@>)",
+        "Array overlap (&&), full-text (@@)",
+        "Slower writes, faster reads",
+        "Multi-key per row"
+      ]
+    },
+    {
+      "heading": "GiST",
+      "tag": "Spatial",
+      "bullets": [
+        "Geometric, range, full-text",
+        "Exclusion constraints (&&)",
+        "PostGIS operations",
+        "Lossy — recheck needed"
+      ]
+    },
+    {
+      "heading": "BRIN",
+      "tag": "Large Table",
+      "bullets": [
+        "Block range summaries",
+        "Time-series, append-only data",
+        "Tiny index, huge table",
+        "Requires physical correlation"
+      ]
+    },
+    {
+      "heading": "Hash",
+      "tag": "Equality",
+      "bullets": [
+        "Equality-only lookups",
+        "Smaller than B-tree for = queries",
+        "No range, no ORDER BY",
+        "WAL-logged since PG 10"
+      ]
+    },
+    {
+      "heading": "Partial / Expression",
+      "tag": "Advanced",
+      "bullets": [
+        "WHERE clause filters subset",
+        "Function-based: LOWER(email)",
+        "Smaller, more targeted",
+        "Combine with any index type"
+      ]
+    }
+  ],
+  "footer": "Default to B-tree. Switch only when query pattern demands GIN/GiST/BRIN.",
+  "output_path": "assets/sql/optimizer/pictures/03-indexing-strategies-taxonomy.png"
+}

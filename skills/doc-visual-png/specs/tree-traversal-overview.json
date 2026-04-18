@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Tree Traversal",
+  "subtitle": "Phân loại theo order và mục đích traversal",
+  "eyebrow": "LeetCode Family 05",
+  "panels": [
+    {
+      "heading": "DFS — Preorder/Inorder/Postorder",
+      "tag": "Recursive / Stack",
+      "bullets": [
+        "Preorder: serialize, path copy",
+        "Inorder: BST sorted order",
+        "Postorder: delete, bottom-up aggregate"
+      ]
+    },
+    {
+      "heading": "BFS — Level Order",
+      "tag": "Queue",
+      "bullets": [
+        "Level-by-level processing",
+        "Right side view, zigzag",
+        "Signal: level, depth, layer"
+      ]
+    },
+    {
+      "heading": "BST Properties",
+      "tag": "Invariant",
+      "bullets": [
+        "Validate BST: inorder must be sorted",
+        "Search/Insert/Delete: O(h)",
+        "Signal: valid BST, kth smallest, LCA"
+      ]
+    },
+    {
+      "heading": "Path & Aggregate",
+      "tag": "Combine",
+      "bullets": [
+        "Max path sum, diameter",
+        "Bottom-up return + global update",
+        "Signal: path sum, diameter, height"
+      ]
+    }
+  ],
+  "footer": "Tree = recursive structure. DFS xử lý depth, BFS xử lý breadth. BST thêm ordering invariant.",
+  "output_path": "assets/leet-codes/images/tree-traversal-overview.png"
+}

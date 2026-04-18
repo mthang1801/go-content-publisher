@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Abstract Factory",
+  "subtitle": "Tạo family of related products mà client không cần biết concrete classes — factory trả về cả bộ, không phải từng cá thể",
+  "eyebrow": "Creational Pattern",
+  "panels": [
+    {
+      "heading": "Abstract Factory",
+      "tag": "Contract",
+      "bullets": [
+        "Định nghĩa method tạo từng product trong family",
+        "Client gọi factory, nhận cả bộ product nhất quán",
+        "Không lộ concrete type nào"
+      ]
+    },
+    {
+      "heading": "Concrete Factory A",
+      "tag": "Family A",
+      "bullets": [
+        "Tạo bộ sản phẩm style A",
+        "Button A + Checkbox A + Dialog A",
+        "Đảm bảo tính tương thích trong family"
+      ]
+    },
+    {
+      "heading": "Concrete Factory B",
+      "tag": "Family B",
+      "bullets": [
+        "Tạo bộ sản phẩm style B",
+        "Button B + Checkbox B + Dialog B",
+        "Swap qua config, không sửa client"
+      ]
+    },
+    {
+      "heading": "Khi nào dùng",
+      "tag": "Signal",
+      "bullets": [
+        "Products phải thuộc cùng family",
+        "Thay đổi family = thay đổi factory, không phải từng product",
+        "Cross-family mix là bug, không phải feature"
+      ]
+    }
+  ],
+  "footer": "Abstract Factory đảm bảo consistency trong family — thay factory một lần, cả bộ product đổi theo.",
+  "output_path": "assets/design-pattern/images/abstract-factory-overview.png"
+}

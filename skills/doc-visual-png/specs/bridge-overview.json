@@ -1,0 +1,46 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "Bridge Pattern",
+  "subtitle": "Separate abstraction from implementation so both vary independently",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Without Bridge",
+      "tag": "M × N Explosion",
+      "bullets": [
+        "InfoEmail, InfoSMS, InfoSlack",
+        "WarnEmail, WarnSMS, WarnSlack",
+        "CritEmail, CritSMS, CritSlack = 9 classes"
+      ]
+    },
+    {
+      "heading": "With Bridge",
+      "tag": "M + N = 6",
+      "bullets": [
+        "Abstraction: Info, Warn, Critical (3)",
+        "Implementation: Email, SMS, Slack (3)",
+        "Connected by interface, not inheritance"
+      ]
+    },
+    {
+      "heading": "vs Adapter",
+      "tag": "Distinction",
+      "bullets": [
+        "Bridge: designed upfront, two axes",
+        "Adapter: retrofitted, one mismatch"
+      ]
+    },
+    {
+      "heading": "Key Signal",
+      "tag": "When to Use",
+      "bullets": [
+        "Two independent dimensions of change",
+        "Class count growing as M × N",
+        "Both sides likely to extend in roadmap"
+      ]
+    }
+  ],
+  "footer": "Bridge = M+N instead of M×N. If only one axis varies, you probably don't need Bridge.",
+  "output_path": "assets/design-pattern/images/bridge-overview.png"
+}

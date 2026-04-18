@@ -1,0 +1,38 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "Prototype",
+  "subtitle": "Clone object có sẵn thay vì tạo mới từ constructor — giữ nguyên state, skip setup cost",
+  "eyebrow": "Creational Pattern",
+  "panels": [
+    {
+      "heading": "Constructor (tạo mới)",
+      "tag": "Without",
+      "bullets": [
+        "Phải biết concrete type",
+        "Lặp lại setup phức tạp",
+        "Tight coupling tới constructor"
+      ]
+    },
+    {
+      "heading": "Prototype (clone)",
+      "tag": "With",
+      "bullets": [
+        "Clone từ instance có sẵn",
+        "Giữ nguyên state đã config",
+        "Client không cần biết type"
+      ]
+    },
+    {
+      "heading": "Deep vs Shallow Clone",
+      "tag": "Trap",
+      "bullets": [
+        "Shallow: shared pointers gây mutation leak",
+        "Deep: copy độc lập nhưng tốn hơn",
+        "Go: cẩn thận slices, maps, pointers"
+      ]
+    }
+  ],
+  "footer": "Prototype giải quyết bài toán: tạo object giống object đã có mà không couple vào constructor.",
+  "output_path": "assets/design-pattern/images/prototype-overview.png"
+}

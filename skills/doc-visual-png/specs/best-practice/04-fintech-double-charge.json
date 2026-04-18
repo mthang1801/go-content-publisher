@@ -1,0 +1,44 @@
+{
+  "output_path": "assets/best-practice/images/04-fintech-workflow.png",
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "01",
+      "heading": "Idempotency Key",
+      "bullets": [
+        "Client gửi kèm Idempotency-Key",
+        "Redis chặn request trùng lặp tức thì",
+        "Áp dụng cơ chế khoá phân tán an toàn"
+      ]
+    },
+    {
+      "tag": "02",
+      "heading": "State Machine",
+      "bullets": [
+        "Chỉ chuyển đổi State hợp lệ",
+        "Từ PENDING -> SUCCESS/FAILED",
+        "Ngăn chặn cập nhật đè trạng thái chéo"
+      ]
+    },
+    {
+      "tag": "03",
+      "heading": "Optimistic Lock",
+      "bullets": [
+        "Đính kèm version revision khi Update",
+        "Đảm bảo tính Consistent khi sửa DB",
+        "Trả về lỗi thay vì Double Charge"
+      ]
+    }
+  ]
+}

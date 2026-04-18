@@ -1,0 +1,46 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "Facade Pattern",
+  "subtitle": "One entry point for a multi-subsystem workflow",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Without Facade",
+      "tag": "Before",
+      "bullets": [
+        "Client calls Inventory, Payment, Shipping",
+        "Must remember order and rollback",
+        "Orchestration logic duplicated everywhere"
+      ]
+    },
+    {
+      "heading": "With Facade",
+      "tag": "After",
+      "bullets": [
+        "Client calls OrderFacade.PlaceOrder()",
+        "Facade knows the sequence internally",
+        "One place to update orchestration"
+      ]
+    },
+    {
+      "heading": "vs Adapter",
+      "tag": "Distinction",
+      "bullets": [
+        "Adapter: 1:1 interface translation",
+        "Facade: M:1 subsystem simplification"
+      ]
+    },
+    {
+      "heading": "Key Trap",
+      "tag": "Warning",
+      "bullets": [
+        "Facade becoming God object",
+        "Hiding too much → blocks advanced use",
+        "One facade per bounded use case"
+      ]
+    }
+  ],
+  "footer": "Facade simplifies coordination. If you're translating interfaces, that's Adapter. If you're mediating peers, that's Mediator.",
+  "output_path": "assets/design-pattern/images/facade-overview.png"
+}

@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "DML & Transactions",
+  "subtitle": "BEGIN → operations → COMMIT/ROLLBACK — transaction lifecycle",
+  "eyebrow": "PostgreSQL Fundamental",
+  "palette_overrides": {
+    "background": "#F0F4F8",
+    "text": "#0C1220",
+    "muted": "#475569",
+    "accent": "#0369A1",
+    "accent_soft": "#E0F2FE",
+    "panel": "#FFFFFF",
+    "border": "#7DD3FC"
+  },
+  "panels": [
+    {
+      "heading": "BEGIN",
+      "tag": "01",
+      "bullets": [
+        "Start explicit transaction",
+        "Snapshot of database state",
+        "Isolation level locked here",
+        "Auto-begin in single statements"
+      ]
+    },
+    {
+      "heading": "DML Operations",
+      "tag": "02",
+      "bullets": [
+        "INSERT, UPDATE, DELETE",
+        "UPSERT (ON CONFLICT)",
+        "CTE with RETURNING",
+        "All changes visible in txn"
+      ]
+    },
+    {
+      "heading": "COMMIT / ROLLBACK",
+      "tag": "03",
+      "bullets": [
+        "COMMIT — make permanent",
+        "ROLLBACK — discard all",
+        "SAVEPOINT for partial rollback",
+        "WAL ensures durability"
+      ]
+    },
+    {
+      "heading": "Isolation Levels",
+      "tag": "04",
+      "bullets": [
+        "READ COMMITTED (default)",
+        "REPEATABLE READ — snapshot",
+        "SERIALIZABLE — strongest",
+        "Higher = more conflict risk"
+      ]
+    }
+  ],
+  "footer": "READ COMMITTED is safe for 95% of apps. Use SERIALIZABLE only for financial consistency requirements.",
+  "output_path": "assets/sql/postgresql/fundamental/images/03-dml-transactions-workflow.png"
+}

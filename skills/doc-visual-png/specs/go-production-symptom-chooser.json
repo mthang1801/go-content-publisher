@@ -1,0 +1,65 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Production Symptom Chooser",
+  "subtitle": "Choose the next Go lane by the operational question, not by folder order.",
+  "eyebrow": "Tech / Decision",
+  "palette_overrides": {
+    "background": "#F7F4EE",
+    "text": "#172033",
+    "muted": "#526070",
+    "accent": "#C2410C",
+    "accent_soft": "#FFEDD5",
+    "panel": "#FFFDFC",
+    "border": "#F1C9AE"
+  },
+  "panels": [
+    {
+      "heading": "RPC or service boundary keeps breaking",
+      "tag": "01",
+      "bullets": [
+        "timeouts cascade",
+        "contracts drift",
+        "resilience feels bolted on"
+      ]
+    },
+    {
+      "heading": "Async flow duplicates or replays badly",
+      "tag": "02",
+      "bullets": [
+        "offsets, acks, retries are fuzzy",
+        "consumer side effects duplicate",
+        "dead-letter ownership is unclear"
+      ]
+    },
+    {
+      "heading": "Incident exists but evidence is weak",
+      "tag": "03",
+      "bullets": [
+        "logs do not correlate",
+        "metrics do not explain user pain",
+        "trace paths break at the handoff"
+      ]
+    },
+    {
+      "heading": "Pods are green but traffic still suffers",
+      "tag": "04",
+      "bullets": [
+        "shutdown drains badly",
+        "readiness hides the issue",
+        "rollout safety is unclear"
+      ]
+    },
+    {
+      "heading": "Build is green but release trust is weak",
+      "tag": "05",
+      "bullets": [
+        "artifact lineage is unclear",
+        "promotion rebuilds too much",
+        "runtime hardening is shallow"
+      ]
+    }
+  ],
+  "footer": "A good router shortens incident time by sending you to the right reasoning lane early.",
+  "output_path": "assets/go/images/go-production-symptom-chooser.png"
+}

@@ -1,0 +1,45 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "Adapter Pattern",
+  "subtitle": "Bridge incompatible interfaces without changing caller or vendor",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Problem",
+      "tag": "Pain Point",
+      "bullets": [
+        "Client speaks Interface A",
+        "Vendor SDK speaks Interface B",
+        "Business code shouldn't learn vendor language"
+      ]
+    },
+    {
+      "heading": "Adapter Role",
+      "tag": "Solution",
+      "bullets": [
+        "Implements Target interface (A)",
+        "Wraps Adaptee (vendor SDK)",
+        "Translates data + errors between both"
+      ]
+    },
+    {
+      "heading": "vs Decorator",
+      "tag": "Distinction",
+      "bullets": [
+        "Decorator: same interface, adds behavior",
+        "Adapter: different interface, translates"
+      ]
+    },
+    {
+      "heading": "vs Facade",
+      "tag": "Distinction",
+      "bullets": [
+        "Facade: simplifies subsystem, new API",
+        "Adapter: bridges 1:1 interface mismatch"
+      ]
+    }
+  ],
+  "footer": "Adapter = interface translator. If you're adding behavior, that's Decorator. If you're simplifying, that's Facade.",
+  "output_path": "assets/design-pattern/images/adapter-overview.png"
+}

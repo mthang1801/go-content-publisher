@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Gin Symptom Chooser",
+  "subtitle": "Pick the first condition that matches what your API is doing under review, load, or incident pressure.",
+  "eyebrow": "Gin / Decision",
+  "palette_overrides": {
+    "background": "#F5F8FF",
+    "text": "#16202F",
+    "muted": "#536074",
+    "accent": "#0F766E",
+    "accent_soft": "#CCFBF1",
+    "panel": "#FCFDFE",
+    "border": "#B9E7E3"
+  },
+  "panels": [
+    {
+      "heading": "Request flow feels magical or fragile",
+      "tag": "01",
+      "bullets": [
+        "context ownership is blurry",
+        "handlers leak framework details",
+        "routing flow is hard to reason about"
+      ]
+    },
+    {
+      "heading": "Middleware order changes behavior",
+      "tag": "02",
+      "bullets": [
+        "abort and recovery interact badly",
+        "auth chain is hard to debug",
+        "cross-cutting concerns feel tangled"
+      ]
+    },
+    {
+      "heading": "Binding or validation keeps surprising you",
+      "tag": "03",
+      "bullets": [
+        "DTO shape and tags drift",
+        "multipart and upload paths are brittle",
+        "request contracts fail at the edge"
+      ]
+    },
+    {
+      "heading": "Production behavior breaks after the basics work",
+      "tag": "04",
+      "bullets": [
+        "JWT, RBAC, rate limit pressure",
+        "lifecycle and shutdown issues",
+        "logging, sessions, caching, CQRS"
+      ]
+    }
+  ],
+  "footer": "The first matching symptom is usually the right entry point. Avoid scanning the whole framework lane when the pressure is already localized.",
+  "output_path": "assets/go/gin/images/gin-symptom-chooser.png"
+}

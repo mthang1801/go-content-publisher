@@ -1,0 +1,47 @@
+{
+  "output_path": "assets/best-practice/images/01-inventory-workflow.png",
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "01",
+      "heading": "Redis (Gatekeeper)",
+      "bullets": [
+        "Thực thi Lua script nguyên tử",
+        "Kiểm tra và trừ stock < 1ms",
+        "Chặn sớm traffic vượt pool",
+        "Chức năng Rate Limiter an toàn"
+      ]
+    },
+    {
+      "tag": "02",
+      "heading": "Message Queue (Buffer)",
+      "bullets": [
+        "Đệm tải cho traffic spike",
+        "Sử dụng Kafka / RabbitMQ",
+        "Partition theo Product SKU",
+        "Bảo toàn thứ tự order"
+      ]
+    },
+    {
+      "tag": "03",
+      "heading": "Database (Source of Truth)",
+      "bullets": [
+        "Consumer group xử lý async",
+        "Cập nhật dữ liệu vào DB",
+        "Điều kiện an toàn WHERE stock >= qty",
+        "Chịu trách nhiệm hoàn tác nếu lỗi"
+      ]
+    }
+  ]
+}

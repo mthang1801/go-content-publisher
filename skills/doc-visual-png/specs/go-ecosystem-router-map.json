@@ -1,0 +1,65 @@
+{
+  "content_type": "tech",
+  "visual_kind": "router_map",
+  "title": "Go Ecosystem Router",
+  "subtitle": "Choose the lane by the kind of question you need to answer, not by directory order.",
+  "eyebrow": "Go / Router",
+  "palette_overrides": {
+    "background": "#F7F4EE",
+    "text": "#1F2937",
+    "muted": "#5B6472",
+    "accent": "#C2410C",
+    "accent_soft": "#FFEDD5",
+    "panel": "#FFFDFC",
+    "border": "#F1C9AE"
+  },
+  "panels": [
+    {
+      "heading": "Language model and core semantics",
+      "tag": "FOUNDATIONAL",
+      "bullets": [
+        "fundamental",
+        "types, errors, testing",
+        "packages and mental models"
+      ]
+    },
+    {
+      "heading": "Coordination and execution pressure",
+      "tag": "RUNTIME",
+      "bullets": [
+        "concurrency",
+        "advanced runtime and pprof",
+        "pipelines, GC, scheduler"
+      ]
+    },
+    {
+      "heading": "API design and Go-native shape",
+      "tag": "TASTE",
+      "bullets": [
+        "idioms",
+        "design-patterns",
+        "composition, options, seams"
+      ]
+    },
+    {
+      "heading": "Framework and delivery surface",
+      "tag": "APP",
+      "bullets": [
+        "gin",
+        "fiber",
+        "orm and transport lanes"
+      ]
+    },
+    {
+      "heading": "Distributed and production boundaries",
+      "tag": "PRODUCTION",
+      "bullets": [
+        "microservices and messaging",
+        "observability and cloud-infra",
+        "deployment and release trust"
+      ]
+    }
+  ],
+  "footer": "Read this map as a router: each lane exists to answer a different production question.",
+  "output_path": "assets/go/images/go-ecosystem-router-map.png"
+}

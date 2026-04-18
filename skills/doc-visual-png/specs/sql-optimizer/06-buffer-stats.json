@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Buffer Stats & Monitoring",
+  "subtitle": "Which pg_stat view to check for which symptom",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Cache hit ratio low?",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_database.blks_hit/read",
+        "Target: > 99%",
+        "Fix: increase shared_buffers"
+      ]
+    },
+    {
+      "heading": "Table bloat growing?",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_user_tables.n_dead_tup",
+        "autovacuum_count still 0?",
+        "Fix: tune autovacuum thresholds"
+      ]
+    },
+    {
+      "heading": "Slow queries?",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_statements",
+        "Sort by mean_exec_time DESC",
+        "Fix: EXPLAIN top offenders"
+      ]
+    },
+    {
+      "heading": "Lock contention?",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_activity.wait_event",
+        "pg_locks for blocked PIDs",
+        "Fix: reduce transaction scope"
+      ]
+    }
+  ],
+  "footer": "pg_stat_statements is the single most valuable extension for production PostgreSQL monitoring.",
+  "output_path": "assets/sql/optimizer/pictures/06-buffer-stats-decision.png"
+}

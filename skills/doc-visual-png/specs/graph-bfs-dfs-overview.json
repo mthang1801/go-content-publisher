@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Graph BFS/DFS",
+  "subtitle": "Chọn traversal strategy theo bài toán",
+  "eyebrow": "LeetCode Family 06",
+  "panels": [
+    {
+      "heading": "BFS — Shortest Path",
+      "tag": "Queue",
+      "bullets": [
+        "Shortest unweighted path",
+        "Level-by-level expansion",
+        "Signal: minimum steps, nearest"
+      ]
+    },
+    {
+      "heading": "DFS — Explore / Count",
+      "tag": "Stack / Recursion",
+      "bullets": [
+        "Connected components, islands",
+        "Cycle detection, path exists",
+        "Signal: count regions, can reach"
+      ]
+    },
+    {
+      "heading": "Topological Sort",
+      "tag": "DAG",
+      "bullets": [
+        "Course schedule, build order",
+        "Kahn (BFS) hoặc DFS + post-order",
+        "Signal: prerequisites, ordering"
+      ]
+    },
+    {
+      "heading": "Multi-source BFS",
+      "tag": "Queue",
+      "bullets": [
+        "Initiate from multiple sources",
+        "01 Matrix, rotting oranges",
+        "Signal: distance from nearest X"
+      ]
+    }
+  ],
+  "footer": "BFS = shortest path, DFS = explore. Topo = ordering trên DAG. Multi-source = nhiều start cùng lúc.",
+  "output_path": "assets/leet-codes/images/graph-bfs-dfs-overview.png"
+}

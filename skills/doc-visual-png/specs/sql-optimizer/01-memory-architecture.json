@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Memory Architecture",
+  "subtitle": "3-layer cache: shared_buffers → OS Cache → Disk",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "shared_buffers",
+      "tag": "Layer 1",
+      "bullets": [
+        "PostgreSQL-managed RAM cache",
+        "8KB pages, LRU eviction",
+        "Target: 25% RAM (max ~8GB)",
+        "HIT → instant return"
+      ]
+    },
+    {
+      "heading": "OS Page Cache",
+      "tag": "Layer 2",
+      "bullets": [
+        "Linux kernel cache (free RAM)",
+        "Transparent to PostgreSQL",
+        "HIT → RAM-to-RAM copy",
+        "MISS → falls to disk I/O"
+      ]
+    },
+    {
+      "heading": "Disk (SSD/HDD)",
+      "tag": "Layer 3",
+      "bullets": [
+        "Physical I/O — slowest layer",
+        "SSD ~0.1ms, HDD ~5ms",
+        "Page loaded → cached in both layers",
+        "Goal: cache hit > 99%"
+      ]
+    },
+    {
+      "heading": "work_mem",
+      "tag": "Per-Op",
+      "bullets": [
+        "RAM per sort/hash operation",
+        "Multiplied by connections × ops",
+        "Too high → OOM killer",
+        "Formula: RAM×25% / conns / 4"
+      ]
+    }
+  ],
+  "footer": "Cache hit < 99% = working set exceeds RAM. Check pg_stat_database.blks_read first.",
+  "output_path": "assets/sql/optimizer/pictures/01-memory-architecture-workflow.png"
+}

@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "router_map",
+  "title": "Gin Framework Router",
+  "subtitle": "Use the lane that matches the pressure on request flow, middleware, input shape, or production behavior.",
+  "eyebrow": "Gin / Router",
+  "palette_overrides": {
+    "background": "#F2F8F4",
+    "text": "#16202F",
+    "muted": "#526070",
+    "accent": "#15803D",
+    "accent_soft": "#DCFCE7",
+    "panel": "#FCFEFD",
+    "border": "#B9E7C6"
+  },
+  "panels": [
+    {
+      "heading": "Request lifecycle and handler ownership",
+      "tag": "BASICS",
+      "bullets": [
+        "engine, routes, gin.Context",
+        "handler boundaries",
+        "project structure"
+      ]
+    },
+    {
+      "heading": "Cross-cutting request behavior",
+      "tag": "MIDDLEWARE",
+      "bullets": [
+        "ordering and abort flow",
+        "guards and interceptors",
+        "recovery and auth seams"
+      ]
+    },
+    {
+      "heading": "Input contract and route surface",
+      "tag": "EDGE",
+      "bullets": [
+        "binding and validation",
+        "routing and versioning",
+        "responses and uploads"
+      ]
+    },
+    {
+      "heading": "Security and production pressure",
+      "tag": "OPERATIONS",
+      "bullets": [
+        "JWT and RBAC",
+        "lifecycle and streaming",
+        "logging, caching, health"
+      ]
+    }
+  ],
+  "footer": "Gin docs work best as lanes: choose the surface that is failing, then read deeper inside that cluster.",
+  "output_path": "assets/go/gin/images/gin-router-map.png"
+}

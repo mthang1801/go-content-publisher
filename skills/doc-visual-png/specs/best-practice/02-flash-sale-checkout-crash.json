@@ -1,0 +1,46 @@
+{
+  "output_path": "assets/best-practice/images/02-flash-sale-workflow.png",
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "01",
+      "heading": "API Gateway",
+      "bullets": [
+        "Tiếp nhận lượng request cực lớn",
+        "Loại bỏ bot request",
+        "Cấp hàng đợi token ảo",
+        "Trả về 202 Accepted"
+      ]
+    },
+    {
+      "tag": "02",
+      "heading": "Redis Waitlist",
+      "bullets": [
+        "Trữ chỗ tạm thời có TTL",
+        "Giới hạn số lượng order concurrent",
+        "Dễ dàng khôi phục khi sập",
+        "Lưu token order chờ checkout"
+      ]
+    },
+    {
+      "tag": "03",
+      "heading": "Kafka Checkout",
+      "bullets": [
+        "Điều tiết xuống Worker",
+        "Chặn đứng tình trạng thắt nút cổ chai DB",
+        "Đồng bộ Async kết quả cho client"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "pre": [
+    ".agents/hooks/pre-context-loader.sh",
+    ".agents/hooks/pre-layer-boundary-check.sh"
+  ],
+  "post": [
+    ".agents/hooks/post-gofmt-check.sh",
+    ".agents/hooks/post-go-test-check.sh"
+  ]
+}

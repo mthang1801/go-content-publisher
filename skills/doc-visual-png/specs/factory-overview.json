@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Factory Method",
+  "subtitle": "Tách quyết định chọn concrete type khỏi code sử dụng — client chỉ yêu cầu interface, factory quyết định implementation",
+  "eyebrow": "Creational Pattern",
+  "panels": [
+    {
+      "heading": "Client",
+      "tag": "Caller",
+      "bullets": [
+        "Chỉ biết Product interface",
+        "Không import concrete types",
+        "Gọi factory để lấy instance"
+      ]
+    },
+    {
+      "heading": "Factory (Creator)",
+      "tag": "Boundary",
+      "bullets": [
+        "Gom selection logic vào 1 chỗ",
+        "Trả về interface, không lộ concrete",
+        "Simple switch → Registry → DI"
+      ]
+    },
+    {
+      "heading": "Concrete Products",
+      "tag": "Implementations",
+      "bullets": [
+        "EmailNotifier, SMSNotifier, PushNotifier",
+        "Mỗi loại implement cùng Product interface",
+        "Thêm mới không cần sửa client"
+      ]
+    },
+    {
+      "heading": "Registry Extension",
+      "tag": "Advanced",
+      "bullets": [
+        "Plugin tự đăng ký constructor",
+        "Factory core không cần biết trước",
+        "Thread-safe registration"
+      ]
+    }
+  ],
+  "footer": "Factory Method gom quyền chọn concrete type vào một boundary duy nhất — client sống trong abstraction.",
+  "output_path": "assets/design-pattern/images/factory-overview.png"
+}

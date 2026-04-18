@@ -1,0 +1,65 @@
+{
+  "content_type": "tech",
+  "visual_kind": "router_map",
+  "title": "Go Production Lanes Map",
+  "subtitle": "Once the problem escapes a single process, move through the production cluster by failure boundary.",
+  "eyebrow": "Go / Production",
+  "palette_overrides": {
+    "background": "#F4F8F7",
+    "text": "#14213D",
+    "muted": "#4E5D6C",
+    "accent": "#0F766E",
+    "accent_soft": "#D1FAE5",
+    "panel": "#FCFEFD",
+    "border": "#B7E4DA"
+  },
+  "panels": [
+    {
+      "heading": "Service edges and contracts",
+      "tag": "MICROSERVICES",
+      "bullets": [
+        "RPC boundaries drift",
+        "timeouts and resilience",
+        "discovery and edge aggregation"
+      ]
+    },
+    {
+      "heading": "Delivery semantics and replay",
+      "tag": "MESSAGING",
+      "bullets": [
+        "offsets, retries, DLQ",
+        "idempotency and duplicate work",
+        "broker handoff pressure"
+      ]
+    },
+    {
+      "heading": "Evidence and operator signal",
+      "tag": "OBSERVABILITY",
+      "bullets": [
+        "logs, RED metrics, tracing",
+        "SLOs and alerting",
+        "incident evidence quality"
+      ]
+    },
+    {
+      "heading": "Runtime environment behavior",
+      "tag": "CLOUD-INFRA",
+      "bullets": [
+        "readiness and draining",
+        "scaling and rollout safety",
+        "config and lifecycle ownership"
+      ]
+    },
+    {
+      "heading": "Artifact trust and release path",
+      "tag": "DEPLOYMENT",
+      "bullets": [
+        "Docker and Kubernetes",
+        "CI/CD and promotion lineage",
+        "runtime hardening"
+      ]
+    }
+  ],
+  "footer": "Topology first: pick the lane whose boundary explains the blast radius you are seeing.",
+  "output_path": "assets/go/images/go-production-lanes-map.png"
+}

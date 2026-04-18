@@ -1,0 +1,38 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Bit Manipulation & Math",
+  "subtitle": "Kỹ thuật bit-level và toán rời rạc",
+  "eyebrow": "LeetCode Family 10",
+  "panels": [
+    {
+      "heading": "XOR Properties",
+      "tag": "O(n) · O(1)",
+      "bullets": [
+        "Single number, missing number",
+        "a ^ a = 0, a ^ 0 = a",
+        "Signal: find unique, toggle"
+      ]
+    },
+    {
+      "heading": "Bit Counting / Masks",
+      "tag": "O(n) / O(32)",
+      "bullets": [
+        "Count bits, power of 2",
+        "Brian Kernighan: n & (n-1)",
+        "Signal: binary, bits, mask"
+      ]
+    },
+    {
+      "heading": "Math / Number Theory",
+      "tag": "Varies",
+      "bullets": [
+        "GCD, fast power, modular",
+        "Happy number, count primes",
+        "Signal: divisible, power, prime"
+      ]
+    }
+  ],
+  "footer": "Bit tricks biến O(n) thành O(1) space. Math patterns = nhận diện invariant số học.",
+  "output_path": "assets/leet-codes/images/bit-math-overview.png"
+}

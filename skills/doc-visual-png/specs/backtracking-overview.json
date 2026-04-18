@@ -1,0 +1,38 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Backtracking",
+  "subtitle": "Generate-prune-collect framework",
+  "eyebrow": "LeetCode Family 09",
+  "panels": [
+    {
+      "heading": "Subsets / Combinations",
+      "tag": "Include or Skip",
+      "bullets": [
+        "Power set, combination sum",
+        "Choose: skip item or include item",
+        "Signal: all subsets, k-size groups"
+      ]
+    },
+    {
+      "heading": "Permutations",
+      "tag": "Swap / Used Array",
+      "bullets": [
+        "All orderings, next permutation",
+        "Track used elements",
+        "Signal: all orderings, arrangement"
+      ]
+    },
+    {
+      "heading": "Grid / Board Search",
+      "tag": "4-dir DFS + Visited",
+      "bullets": [
+        "Word search, N-Queens, Sudoku",
+        "Place-check-recurse-undo",
+        "Signal: place on board, valid config"
+      ]
+    }
+  ],
+  "footer": "Backtracking = DFS trên decision tree. Pruning sớm biến O(n!) thành khả thi.",
+  "output_path": "assets/leet-codes/images/backtracking-overview.png"
+}

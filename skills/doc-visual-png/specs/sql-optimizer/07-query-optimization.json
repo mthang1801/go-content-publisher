@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Query Optimization",
+  "subtitle": "Identify → Analyze → Fix → Verify — the tuning loop",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Identify",
+      "tag": "01",
+      "bullets": [
+        "pg_stat_statements top N",
+        "Sort by total_exec_time",
+        "Filter: calls > threshold"
+      ]
+    },
+    {
+      "heading": "Analyze",
+      "tag": "02",
+      "bullets": [
+        "EXPLAIN (ANALYZE, BUFFERS)",
+        "Find widest cost gap",
+        "Check estimate vs actual rows"
+      ]
+    },
+    {
+      "heading": "Fix",
+      "tag": "03",
+      "bullets": [
+        "Add/adjust index",
+        "Rewrite query structure",
+        "Tune work_mem if sort spills"
+      ]
+    },
+    {
+      "heading": "Verify",
+      "tag": "04",
+      "bullets": [
+        "Re-run EXPLAIN ANALYZE",
+        "Compare before/after timing",
+        "Monitor pg_stat for regression"
+      ]
+    }
+  ],
+  "footer": "Always EXPLAIN before and after. Gut-feel tuning causes more harm than the original problem.",
+  "output_path": "assets/sql/optimizer/pictures/07-query-optimization-workflow.png"
+}

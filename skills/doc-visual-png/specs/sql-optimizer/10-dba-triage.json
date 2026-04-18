@@ -1,0 +1,74 @@
+{
+  "content_type": "tech",
+  "visual_kind": "router_map",
+  "title": "DBA Triage Playbook",
+  "subtitle": "Symptom → module router for production incidents",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Latency Spike",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: cache hit ratio",
+        "Check: lock waits (pg_locks)",
+        "Module: Memory Architecture"
+      ]
+    },
+    {
+      "heading": "Disk Full / Growth",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: table bloat (dead tuples)",
+        "Check: WAL retention",
+        "Module: VACUUM & WAL"
+      ]
+    },
+    {
+      "heading": "Connection Exhaustion",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_activity count",
+        "Check: idle in transaction",
+        "Module: Connection Pooling"
+      ]
+    },
+    {
+      "heading": "Replication Lag",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_replication",
+        "Check: WAL sender / receiver",
+        "Module: Streaming HA"
+      ]
+    },
+    {
+      "heading": "Slow Queries",
+      "tag": "Symptom",
+      "bullets": [
+        "Check: pg_stat_statements",
+        "Check: missing indexes",
+        "Module: EXPLAIN + Indexing"
+      ]
+    },
+    {
+      "heading": "Data Corruption",
+      "tag": "Critical",
+      "bullets": [
+        "Check: pg_catalog consistency",
+        "Check: checksum failures",
+        "Module: Backup & PITR"
+      ]
+    }
+  ],
+  "footer": "Start with pg_stat_activity and pg_stat_statements — they cover 80% of production triage.",
+  "output_path": "assets/sql/optimizer/pictures/10-dba-triage-router.png"
+}

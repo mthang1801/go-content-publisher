@@ -1,0 +1,78 @@
+{
+  "content_type": "tech",
+  "visual_kind": "sequence_flow",
+  "title": "Ports & Adapters Flow",
+  "subtitle": "Watch one business request cross the boundary: adapters translate, the core decides, and technology answers through ports.",
+  "eyebrow": "System Design / Architecture",
+  "palette_overrides": {
+    "background": "#F6F2EC",
+    "text": "#1C2430",
+    "muted": "#5C6875",
+    "accent": "#B85C38",
+    "accent_soft": "#F6E3DA",
+    "panel": "#FFFDF9",
+    "border": "#DCCABD"
+  },
+  "actors": [
+    "REST / CLI",
+    "Inbound Port",
+    "Application Core",
+    "Outbound Port",
+    "Infra Adapter"
+  ],
+  "panels": [
+    {
+      "from": "REST / CLI",
+      "to": "Inbound Port",
+      "heading": "Translate intent",
+      "body": "A driver adapter turns HTTP, CLI, or test input into a use-case command the application understands.",
+      "bullets": [
+        "No framework semantics leak into business rules",
+        "The entry contract stays stable even when controllers change"
+      ]
+    },
+    {
+      "from": "Inbound Port",
+      "to": "Application Core",
+      "heading": "Enter the use case",
+      "body": "The core receives business intent through a contract that speaks application language, not transport language.",
+      "bullets": [
+        "Validation, policy, orchestration, and decision live here",
+        "This is where the system should remain technology-agnostic"
+      ]
+    },
+    {
+      "from": "Application Core",
+      "to": "Outbound Port",
+      "heading": "Request capability",
+      "body": "The core asks for persistence, payment, or notification as an ability, not as a specific vendor call.",
+      "bullets": [
+        "Save order",
+        "Charge payment",
+        "Send confirmation"
+      ]
+    },
+    {
+      "from": "Outbound Port",
+      "to": "Infra Adapter",
+      "heading": "Bind to technology",
+      "body": "A driven adapter speaks Postgres, MongoDB, Stripe, or email protocol at the edge so the core does not have to.",
+      "bullets": [
+        "Technology swap should stop here",
+        "Adapters translate data shape and protocol details"
+      ]
+    },
+    {
+      "from": "Infra Adapter",
+      "to": "Application Core",
+      "heading": "Return outcome",
+      "body": "The capability result comes back through the port boundary, while business consequence stays inside the core.",
+      "bullets": [
+        "Success or failure becomes domain-level handling",
+        "If every change leaks inward, the boundary is fake"
+      ]
+    }
+  ],
+  "footer": "Hexagonal Architecture is not about drawing a hexagon. It is about keeping translation at the edge and ownership of decisions in the core.",
+  "output_path": "assets/system-design/images/ports-adapters-hexagonal-architecture.png"
+}

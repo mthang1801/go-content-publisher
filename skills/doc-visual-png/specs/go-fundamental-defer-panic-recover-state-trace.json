@@ -1,0 +1,78 @@
+{
+  "content_type": "tech",
+  "visual_kind": "state_trace",
+  "title": "defer / panic / recover",
+  "subtitle": "Read the runtime in order: register cleanup first, then watch return, panic unwind, and recover split into different paths.",
+  "eyebrow": "Go Fundamentals / Runtime Flow",
+  "palette_overrides": {
+    "background": "#F7F3EE",
+    "text": "#1E2930",
+    "muted": "#5F6B73",
+    "accent": "#B4532A",
+    "accent_soft": "#F6E1D4",
+    "panel": "#FFFCF7",
+    "border": "#DECBBB"
+  },
+  "panels": [
+    {
+      "heading": "Register cleanup right after acquire",
+      "tag": "SETUP",
+      "body": "Nothing runs yet. `defer` only pushes cleanup onto the current function's stack.",
+      "bullets": [
+        "The call is scheduled in LIFO order",
+        "Arguments are evaluated when defer is registered"
+      ],
+      "state_lines": [
+        "open file / lock mutex / begin span",
+        "defer cleanup()",
+        "defer stack: [cleanup]"
+      ]
+    },
+    {
+      "heading": "Normal return drains the defer stack",
+      "tag": "RETURN PATH",
+      "body": "When the function returns normally, Go executes deferred calls before the frame is removed.",
+      "bullets": [
+        "Named return values can still be changed inside deferred funcs",
+        "Cleanup runs even across multiple early returns"
+      ],
+      "state_lines": [
+        "return value prepared",
+        "run cleanup()",
+        "function exits after deferred calls finish"
+      ]
+    },
+    {
+      "heading": "Panic changes the path, not the rule",
+      "tag": "PANIC PATH",
+      "body": "A panic starts stack unwinding, but deferred calls in the panicking frame still run on the way out.",
+      "bullets": [
+        "Deferred cleanup still executes during unwind",
+        "If nobody recovers, panic continues up and can crash the process"
+      ],
+      "state_lines": [
+        "panic(\"boom\")",
+        "start unwind",
+        "run cleanup() while unwinding",
+        "propagate panic to caller"
+      ]
+    },
+    {
+      "heading": "recover only works at the live boundary",
+      "tag": "RECOVER BOUNDARY",
+      "body": "Recovery is only effective inside the immediate deferred function of the same goroutine that is currently panicking.",
+      "bullets": [
+        "A helper that calls recover indirectly does not stop the panic",
+        "A parent goroutine cannot recover a child goroutine's panic"
+      ],
+      "state_lines": [
+        "defer func() { if r := recover(); r != nil { ... } }()",
+        "panic reaches that deferred func",
+        "recover() consumes the panic",
+        "control resumes after deferred function returns"
+      ]
+    }
+  ],
+  "footer": "Defer is about scheduled cleanup. Panic is about unwinding. Recover only works at one exact runtime boundary.",
+  "output_path": "assets/go/fundamental/basics/images/03-defer-panic-recover-workflow.png"
+}

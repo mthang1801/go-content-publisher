@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "mental_model_card",
+  "title": "Singleton",
+  "subtitle": "Đảm bảo một class chỉ có đúng 1 instance và cung cấp global access point tới instance đó",
+  "eyebrow": "Creational Pattern",
+  "panels": [
+    {
+      "heading": "sync.Once (Go)",
+      "tag": "Idiomatic",
+      "bullets": [
+        "Goroutine-safe initialization",
+        "Init chạy đúng 1 lần dù gọi nhiều",
+        "Không cần double-check lock tay"
+      ]
+    },
+    {
+      "heading": "Global var + init()",
+      "tag": "Simple",
+      "bullets": [
+        "Package-level var, init tự chạy",
+        "Không lazy — tạo ngay khi import",
+        "Đơn giản nhưng thiếu kiểm soát"
+      ]
+    },
+    {
+      "heading": "Khi nào cần",
+      "tag": "Signal",
+      "bullets": [
+        "Database connection pool: 1 pool/app",
+        "Logger: shared across goroutines",
+        "Config store: load một lần, dùng mọi nơi"
+      ]
+    },
+    {
+      "heading": "Khi nào tránh",
+      "tag": "Warning",
+      "bullets": [
+        "Mọi thứ đều singleton → hidden coupling",
+        "Test khó mock nếu truy cập global",
+        "Có thể inject dependency bình thường"
+      ]
+    }
+  ],
+  "footer": "Singleton tồn tại vì operational necessity, không phải vì tiện — dùng ít nhất có thể.",
+  "output_path": "assets/design-pattern/images/singleton-overview.png"
+}

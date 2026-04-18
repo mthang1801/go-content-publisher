@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Decorator Pattern",
+  "subtitle": "Stack behaviors around a core component without changing its interface",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Core Component",
+      "tag": "Base",
+      "bullets": [
+        "EmailNotifier.Send()",
+        "Implements Notifier interface",
+        "Pure business logic only"
+      ]
+    },
+    {
+      "heading": "Decorator Stack",
+      "tag": "Layers",
+      "bullets": [
+        "Logging → Retry → Metrics → Auth",
+        "Each wraps the next, same interface",
+        "Order of stack = order of execution"
+      ]
+    },
+    {
+      "heading": "Go Idiom",
+      "tag": "Real World",
+      "bullets": [
+        "http.Handler middleware chain",
+        "io.Reader wrapping (bufio, gzip)",
+        "func(Handler) Handler pattern"
+      ]
+    },
+    {
+      "heading": "Key Trap",
+      "tag": "Warning",
+      "bullets": [
+        "Wrong order → auth bypass or log miss",
+        "Decorator ≠ Proxy (control vs enhance)",
+        "Interface too large → forwarding hell"
+      ]
+    }
+  ],
+  "footer": "Decorator adds behavior. If you're controlling access/lifecycle, that's Proxy. If you're converting interface, that's Adapter.",
+  "output_path": "assets/design-pattern/images/decorator-overview.png"
+}

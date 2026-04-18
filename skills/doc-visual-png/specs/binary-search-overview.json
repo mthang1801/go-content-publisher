@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Binary Search",
+  "subtitle": "Chọn variant theo bài toán target",
+  "eyebrow": "LeetCode Family 02",
+  "panels": [
+    {
+      "heading": "Classic Binary Search",
+      "tag": "O(log n)",
+      "bullets": [
+        "Tìm exact match trong sorted array",
+        "lo, hi, mid — shrink half mỗi bước",
+        "Signal: sorted + find element"
+      ]
+    },
+    {
+      "heading": "First/Last True",
+      "tag": "O(log n)",
+      "bullets": [
+        "Tìm boundary: first valid hoặc last valid",
+        "lo = mid+1 hoặc hi = mid, không ±1 lung tung",
+        "Signal: first bad version, search insert"
+      ]
+    },
+    {
+      "heading": "Search on Answer",
+      "tag": "O(n·log(range))",
+      "bullets": [
+        "Binary search trên giá trị đáp án, không trên index",
+        "Feasibility check ở mỗi mid",
+        "Signal: minimum feasible, split array, koko bananas"
+      ]
+    },
+    {
+      "heading": "Rotated / Modified",
+      "tag": "O(log n)",
+      "bullets": [
+        "Array bị xoay hoặc có duplicate",
+        "Xác định half nào sorted trước",
+        "Signal: rotated sorted, peak element"
+      ]
+    }
+  ],
+  "footer": "Mọi variant đều chia đôi search space — khác nhau ở predicate quyết định nửa nào bỏ.",
+  "output_path": "assets/leet-codes/images/binary-search-overview.png"
+}

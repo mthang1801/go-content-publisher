@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Two Pointers & Sliding Window",
+  "subtitle": "Chọn variant theo signal đề bài",
+  "eyebrow": "LeetCode Family 01",
+  "panels": [
+    {
+      "heading": "Opposite-End Pointers",
+      "tag": "O(n) · O(1)",
+      "bullets": [
+        "Input đã sorted hoặc cần ép hai đầu hội tụ",
+        "Mỗi bước loại hẳn một đầu",
+        "Signal: pair sum, palindrome, container"
+      ]
+    },
+    {
+      "heading": "Fast/Slow Pointers",
+      "tag": "O(n) · O(1)",
+      "bullets": [
+        "Tìm middle, detect cycle, partition in-place",
+        "Hai con trỏ tiến tốc độ khác nhau",
+        "Signal: linked list cycle, remove nth"
+      ]
+    },
+    {
+      "heading": "Variable Sliding Window",
+      "tag": "O(n) · O(k)",
+      "bullets": [
+        "Subarray/substring liên tiếp + constraint",
+        "Expand right, shrink left khi vi phạm",
+        "Signal: longest, smallest, at most k"
+      ]
+    },
+    {
+      "heading": "Fixed Sliding Window",
+      "tag": "O(n) · O(1)",
+      "bullets": [
+        "Cửa sổ kích thước cố định k",
+        "Chỉ update incremental: thêm mới, bỏ cũ",
+        "Signal: average, max in window of size k"
+      ]
+    }
+  ],
+  "footer": "Cùng family 'boundary movement' — khác nhau ở cách di chuyển và invariant giữ lời giải đúng.",
+  "output_path": "assets/leet-codes/images/two-pointers-overview.png"
+}

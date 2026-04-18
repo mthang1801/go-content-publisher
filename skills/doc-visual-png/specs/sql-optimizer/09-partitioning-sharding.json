@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Partitioning & Sharding",
+  "subtitle": "Choose the partition strategy that matches your access pattern",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Range Partition",
+      "tag": "Time-Series",
+      "bullets": [
+        "Partition by date/timestamp range",
+        "Best for: logs, events, time-series",
+        "Enables partition pruning on WHERE",
+        "Easy to drop old partitions"
+      ]
+    },
+    {
+      "heading": "List Partition",
+      "tag": "Category",
+      "bullets": [
+        "Partition by discrete values",
+        "Best for: region, status, tenant",
+        "Each value maps to one partition",
+        "Good for multi-tenant isolation"
+      ]
+    },
+    {
+      "heading": "Hash Partition",
+      "tag": "Even Split",
+      "bullets": [
+        "Partition by hash of key",
+        "Even distribution across N parts",
+        "No natural range pruning",
+        "Best for: random-access workloads"
+      ]
+    },
+    {
+      "heading": "Sharding (Citus/FDW)",
+      "tag": "Scale-Out",
+      "bullets": [
+        "Data across multiple servers",
+        "Horizontal scale beyond single node",
+        "Cross-shard queries are expensive",
+        "Best for: multi-TB, multi-region"
+      ]
+    }
+  ],
+  "footer": "Start with native partitioning. Shard only when single-node capacity is exceeded.",
+  "output_path": "assets/sql/optimizer/pictures/09-partitioning-sharding-decision.png"
+}

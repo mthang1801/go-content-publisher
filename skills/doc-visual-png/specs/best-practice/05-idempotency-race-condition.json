@@ -1,0 +1,35 @@
+{
+  "output_path": "assets/best-practice/images/05-idempotency-compare.png",
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "Race Condition",
+      "heading": "Check-Then-Act Flaw",
+      "bullets": [
+        "Hai request cùng lúc kiểm tra DB đều pass",
+        "Cả 2 lọt qua lỗ hổng và ghi dữ liệu",
+        "Bảo vệ lỏng lẻo dễ sập khi lượng tải cao"
+      ]
+    },
+    {
+      "tag": "Idempotency",
+      "heading": "Atomic Lock + DB UNIQUE",
+      "bullets": [
+        "Redis NX Lock (Set if Not Exists)",
+        "Postgres UNIQUE Constraint Safety Net",
+        "Request #2 dội ngược bằng Retry or Poll"
+      ]
+    }
+  ]
+}

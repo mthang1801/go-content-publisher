@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Linked List Patterns",
+  "subtitle": "Thao tác chính theo family pointer manipulation",
+  "eyebrow": "LeetCode Family 04",
+  "panels": [
+    {
+      "heading": "Reverse",
+      "tag": "Core",
+      "bullets": [
+        "prev/curr/next pointer swap",
+        "Reverse toàn bộ hoặc reverse k-group",
+        "Signal: reverse, swap pairs"
+      ]
+    },
+    {
+      "heading": "Fast/Slow",
+      "tag": "Detect",
+      "bullets": [
+        "Cycle detection (Floyd's)",
+        "Find middle node",
+        "Signal: has cycle, middle of list"
+      ]
+    },
+    {
+      "heading": "Merge / Sort",
+      "tag": "Combine",
+      "bullets": [
+        "Merge two sorted lists",
+        "Merge k sorted (heap-assisted)",
+        "Signal: merge, sort linked list"
+      ]
+    },
+    {
+      "heading": "Dummy Head",
+      "tag": "Technique",
+      "bullets": [
+        "Avoid null head edge cases",
+        "Remove nth from end, partition",
+        "Signal: delete, reorder, partition"
+      ]
+    }
+  ],
+  "footer": "Linked list problems = pointer juggling. Dummy head + fast/slow giải quyết 80% edge cases.",
+  "output_path": "assets/leet-codes/images/linked-list-overview.png"
+}

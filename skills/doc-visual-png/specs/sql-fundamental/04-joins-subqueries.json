@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "title": "JOINs & Subqueries",
+  "subtitle": "Choose the right join type for the relationship pattern",
+  "eyebrow": "PostgreSQL Fundamental",
+  "palette_overrides": {
+    "background": "#F0F4F8",
+    "text": "#0C1220",
+    "muted": "#475569",
+    "accent": "#0369A1",
+    "accent_soft": "#E0F2FE",
+    "panel": "#FFFFFF",
+    "border": "#7DD3FC"
+  },
+  "panels": [
+    {
+      "heading": "INNER JOIN",
+      "tag": "Match Both",
+      "bullets": [
+        "Only matching rows from both tables",
+        "Most common join type",
+        "Null FK = row excluded",
+        "Use: orders + users (confirmed)"
+      ]
+    },
+    {
+      "heading": "LEFT JOIN",
+      "tag": "Keep Left",
+      "bullets": [
+        "All left rows, NULL if no match",
+        "Find users with no orders",
+        "WHERE right.id IS NULL pattern",
+        "Use: report all, optional relation"
+      ]
+    },
+    {
+      "heading": "CROSS JOIN",
+      "tag": "Cartesian",
+      "bullets": [
+        "Every row × every row",
+        "N × M result set",
+        "Use: generate combinations",
+        "Danger: accidental cross join"
+      ]
+    },
+    {
+      "heading": "LATERAL JOIN",
+      "tag": "Correlated",
+      "bullets": [
+        "Subquery references outer row",
+        "Like a for-each loop in SQL",
+        "Use: top-N per group",
+        "Alternative to window + filter"
+      ]
+    }
+  ],
+  "footer": "INNER JOIN for matching, LEFT JOIN for optional, LATERAL JOIN for top-N per group. Avoid accidental CROSS JOIN.",
+  "output_path": "assets/sql/postgresql/fundamental/images/04-joins-subqueries-compare.png"
+}

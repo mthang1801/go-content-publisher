@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "VACUUM & ANALYZE",
+  "subtitle": "Dead tuple lifecycle: accumulate → vacuum → reuse space",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "UPDATE/DELETE",
+      "tag": "01",
+      "bullets": [
+        "Old row version marked dead",
+        "New version inserted (MVCC)",
+        "Dead tuple stays on page",
+        "Table bloats over time"
+      ]
+    },
+    {
+      "heading": "VACUUM",
+      "tag": "02",
+      "bullets": [
+        "Scans for dead tuples",
+        "Marks space as reusable",
+        "Does NOT shrink file on disk",
+        "autovacuum runs in background"
+      ]
+    },
+    {
+      "heading": "ANALYZE",
+      "tag": "03",
+      "bullets": [
+        "Samples table data",
+        "Updates pg_statistic",
+        "Planner uses fresh stats",
+        "Stale stats = wrong plans"
+      ]
+    },
+    {
+      "heading": "VACUUM FULL",
+      "tag": "Emergency",
+      "bullets": [
+        "Rewrites entire table",
+        "Actually shrinks file size",
+        "Takes ACCESS EXCLUSIVE lock",
+        "Use only when severely bloated"
+      ]
+    }
+  ],
+  "footer": "autovacuum handles 95% of cases. Manual VACUUM FULL only for extreme bloat with maintenance window.",
+  "output_path": "assets/sql/optimizer/pictures/04-vacuum-analyze-workflow.png"
+}

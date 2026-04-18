@@ -1,0 +1,38 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Greedy & Intervals",
+  "subtitle": "Chọn approach theo invariant greedy",
+  "eyebrow": "LeetCode Family 08",
+  "panels": [
+    {
+      "heading": "Interval Scheduling",
+      "tag": "Sort + Sweep",
+      "bullets": [
+        "Merge, insert, non-overlapping",
+        "Sort by start or end time",
+        "Signal: intervals, meetings, overlap"
+      ]
+    },
+    {
+      "heading": "Jump / Coverage",
+      "tag": "Greedy Forward",
+      "bullets": [
+        "Jump game, min jumps, gas station",
+        "Track farthest reachable",
+        "Signal: can reach, minimum steps"
+      ]
+    },
+    {
+      "heading": "Optimal Choice",
+      "tag": "Local → Global",
+      "bullets": [
+        "Activity selection, task scheduler",
+        "Locally optimal = globally optimal",
+        "Signal: maximize/minimize với constraint"
+      ]
+    }
+  ],
+  "footer": "Greedy đúng khi local optimal dẫn tới global optimal. Không chứng minh được → dùng DP.",
+  "output_path": "assets/leet-codes/images/greedy-intervals-overview.png"
+}

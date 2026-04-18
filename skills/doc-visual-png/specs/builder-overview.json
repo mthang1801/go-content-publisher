@@ -1,0 +1,43 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "Builder",
+  "subtitle": "Tách quá trình xây dựng object phức tạp khỏi representation — cùng construction process, khác output",
+  "eyebrow": "Creational Pattern",
+  "panels": [
+    {
+      "heading": "Director",
+      "tag": "01",
+      "bullets": [
+        "Biết thứ tự build steps",
+        "Gọi builder theo sequence"
+      ]
+    },
+    {
+      "heading": "Builder Interface",
+      "tag": "02",
+      "bullets": [
+        "Khai báo từng build step",
+        "SetWalls, SetDoor, SetRoof..."
+      ]
+    },
+    {
+      "heading": "Concrete Builder",
+      "tag": "03",
+      "bullets": [
+        "Implement từng step cụ thể",
+        "Giữ state nội bộ của product"
+      ]
+    },
+    {
+      "heading": "Product",
+      "tag": "04",
+      "bullets": [
+        "Object phức tạp hoàn chỉnh",
+        "Lấy qua GetResult()"
+      ]
+    }
+  ],
+  "footer": "Builder pattern: Director điều phối, Builder thi công, Product là thành phẩm.",
+  "output_path": "assets/design-pattern/images/builder-overview.png"
+}

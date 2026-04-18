@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Stack, Queue & Monotonic",
+  "subtitle": "Phân loại theo invariant stack/queue giữ",
+  "eyebrow": "LeetCode Family 03",
+  "panels": [
+    {
+      "heading": "Basic Stack",
+      "tag": "LIFO",
+      "bullets": [
+        "Valid parentheses, eval expression",
+        "Recursion simulation, undo",
+        "Signal: matching, nesting, reverse order"
+      ]
+    },
+    {
+      "heading": "Monotonic Stack",
+      "tag": "O(n)",
+      "bullets": [
+        "Next greater / smaller element",
+        "Histogram max area, daily temperatures",
+        "Signal: 'next X that is larger/smaller'"
+      ]
+    },
+    {
+      "heading": "Queue / BFS Layer",
+      "tag": "FIFO",
+      "bullets": [
+        "Level-order traversal, sliding window max",
+        "BFS shortest path on unweighted graph",
+        "Signal: level-by-level, shortest steps"
+      ]
+    },
+    {
+      "heading": "Monotonic Deque",
+      "tag": "O(n)",
+      "bullets": [
+        "Sliding window min/max in O(1)",
+        "Maintain decreasing/increasing deque",
+        "Signal: max in window of size k"
+      ]
+    }
+  ],
+  "footer": "Stack = past context, Queue = frontier. Monotonic = thêm ordering invariant lên trên.",
+  "output_path": "assets/leet-codes/images/stack-queue-overview.png"
+}

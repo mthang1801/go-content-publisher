@@ -1,0 +1,60 @@
+{
+  "content_type": "tech",
+  "visual_kind": "workflow_map",
+  "title": "DDL & Constraints",
+  "subtitle": "CREATE → ALTER → constraint lifecycle — schema evolution path",
+  "eyebrow": "PostgreSQL Fundamental",
+  "palette_overrides": {
+    "background": "#F0F4F8",
+    "text": "#0C1220",
+    "muted": "#475569",
+    "accent": "#0369A1",
+    "accent_soft": "#E0F2FE",
+    "panel": "#FFFFFF",
+    "border": "#7DD3FC"
+  },
+  "panels": [
+    {
+      "heading": "CREATE TABLE",
+      "tag": "01",
+      "bullets": [
+        "Define columns + types",
+        "PRIMARY KEY, NOT NULL",
+        "REFERENCES for FK",
+        "CHECK for domain rules"
+      ]
+    },
+    {
+      "heading": "ALTER TABLE",
+      "tag": "02",
+      "bullets": [
+        "ADD/DROP COLUMN",
+        "ADD CONSTRAINT (validated)",
+        "RENAME, SET DEFAULT",
+        "Lock implications vary"
+      ]
+    },
+    {
+      "heading": "Constraints",
+      "tag": "03",
+      "bullets": [
+        "UNIQUE, CHECK, EXCLUDE",
+        "FK ON DELETE CASCADE/SET NULL",
+        "NOT VALID + VALIDATE later",
+        "Deferrable for batch loads"
+      ]
+    },
+    {
+      "heading": "Migration Safety",
+      "tag": "04",
+      "bullets": [
+        "ADD COLUMN — no rewrite",
+        "ADD NOT NULL default — PG11+",
+        "CREATE INDEX CONCURRENTLY",
+        "NOT VALID avoids full scan"
+      ]
+    }
+  ],
+  "footer": "NOT VALID + VALIDATE CONSTRAINT = zero-downtime constraint addition on large tables.",
+  "output_path": "assets/sql/postgresql/fundamental/images/02-ddl-constraints-workflow.png"
+}

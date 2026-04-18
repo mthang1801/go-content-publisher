@@ -1,0 +1,37 @@
+{
+  "output_path": "assets/best-practice/images/03-goroutine-compare.png",
+  "content_type": "tech",
+  "visual_kind": "compare_card",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "Nguy hiểm",
+      "heading": "Uncontrolled Goroutine",
+      "bullets": [
+        "Sinh Goroutine không bắt panic",
+        "Làm chết toàn bộ Go process ngay lập tức",
+        "Thiếu Recovery trong logic",
+        "Tài nguyên thất thoát không thể rollback"
+      ]
+    },
+    {
+      "tag": "An toàn",
+      "heading": "Bounded Worker Pool",
+      "bullets": [
+        "Kiểm soát số lượng bằng Semaphore/Channels",
+        "Luôn wrap func bằng defer recover()",
+        "Cách ly lỗi từng worker không lây lan",
+        "Waitgroup đảm bảo Graceful Shutdown"
+      ]
+    }
+  ]
+}

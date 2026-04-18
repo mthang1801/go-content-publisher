@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "Symptom to Lane Chooser",
+  "subtitle": "Pick the first condition that matches what you are seeing in code review, debugging, or production.",
+  "eyebrow": "Go / Triage",
+  "palette_overrides": {
+    "background": "#F7F5FB",
+    "text": "#172033",
+    "muted": "#536074",
+    "accent": "#7C3AED",
+    "accent_soft": "#EDE9FE",
+    "panel": "#FFFDFE",
+    "border": "#D9CCF8"
+  },
+  "panels": [
+    {
+      "heading": "Race, deadlock, cancel, leak?",
+      "tag": "CONCURRENCY",
+      "bullets": [
+        "goroutines and channels",
+        "mutex and race conditions",
+        "context and pipelines"
+      ]
+    },
+    {
+      "heading": "CPU, memory, GC, trace, pprof?",
+      "tag": "ADVANCED",
+      "bullets": [
+        "scheduler pressure",
+        "memory model and heap",
+        "profiling workflow"
+      ]
+    },
+    {
+      "heading": "API shape, options, interfaces?",
+      "tag": "IDIOMS",
+      "bullets": [
+        "constructors",
+        "functional options",
+        "decorators and middleware"
+      ]
+    },
+    {
+      "heading": "Reusable structure or pattern pressure?",
+      "tag": "PATTERNS",
+      "bullets": [
+        "creational",
+        "structural",
+        "behavioral translation"
+      ]
+    }
+  ],
+  "footer": "Use the first matching symptom. The goal is to shrink investigation time, not to visit every folder.",
+  "output_path": "assets/go/images/go-symptom-lane-map.png"
+}

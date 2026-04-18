@@ -1,0 +1,80 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Data Types & Domains",
+  "subtitle": "PostgreSQL type system — choose the right contract for your schema",
+  "eyebrow": "PostgreSQL Fundamental",
+  "palette_overrides": {
+    "background": "#F0F4F8",
+    "text": "#0C1220",
+    "muted": "#475569",
+    "accent": "#0369A1",
+    "accent_soft": "#E0F2FE",
+    "panel": "#FFFFFF",
+    "border": "#7DD3FC"
+  },
+  "panels": [
+    {
+      "heading": "Numeric",
+      "tag": "Exact",
+      "bullets": [
+        "integer/bigint — general purpose",
+        "numeric(p,s) — money, financial",
+        "Avoid float for money",
+        "bigint GENERATED for IDs"
+      ]
+    },
+    {
+      "heading": "Text",
+      "tag": "Flexible",
+      "bullets": [
+        "text — preferred, no perf diff",
+        "varchar(n) — validation only",
+        "char(n) — fixed codes only",
+        "No varchar(255) MySQL habit"
+      ]
+    },
+    {
+      "heading": "Temporal",
+      "tag": "Always TZ",
+      "bullets": [
+        "timestamptz — ALWAYS USE",
+        "date — birthday, due date",
+        "interval — duration arithmetic",
+        "Never use timestamp without tz"
+      ]
+    },
+    {
+      "heading": "Semi-Structured",
+      "tag": "Indexed",
+      "bullets": [
+        "jsonb — binary, indexable, fast",
+        "json — text storage only",
+        "array — typed collections",
+        "GIN index for @> queries"
+      ]
+    },
+    {
+      "heading": "Identity",
+      "tag": "Primary Key",
+      "bullets": [
+        "uuid v7 — sortable, distributed",
+        "bigint IDENTITY — single DB",
+        "Avoid serial (legacy)",
+        "gen_random_uuid() built-in"
+      ]
+    },
+    {
+      "heading": "Custom",
+      "tag": "Domain",
+      "bullets": [
+        "ENUM — bounded set of values",
+        "DOMAIN — reusable constraints",
+        "Composite — structured type",
+        "Range — interval operations"
+      ]
+    }
+  ],
+  "footer": "NUMERIC for money, TIMESTAMPTZ for time, TEXT over VARCHAR, JSONB over JSON. Type contract = data integrity.",
+  "output_path": "assets/sql/postgresql/fundamental/images/01-data-types-taxonomy.png"
+}

@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Proxy Pattern",
+  "subtitle": "Control access to a real object through the same interface",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Virtual Proxy",
+      "tag": "Lazy Init",
+      "bullets": [
+        "Create real object on first use",
+        "sync.Once for thread safety",
+        "Saves startup cost when unused"
+      ]
+    },
+    {
+      "heading": "Protection Proxy",
+      "tag": "Access Control",
+      "bullets": [
+        "Check auth before delegating",
+        "Same interface, different policy",
+        "Keeps auth out of business code"
+      ]
+    },
+    {
+      "heading": "Caching Proxy",
+      "tag": "Performance",
+      "bullets": [
+        "Cache results by key",
+        "Delegate on miss, return cache on hit",
+        "Must define invalidation strategy"
+      ]
+    },
+    {
+      "heading": "Remote Proxy",
+      "tag": "Network",
+      "bullets": [
+        "Local stand-in for remote object",
+        "gRPC stub, API client wrapper",
+        "Hides network boundary from caller"
+      ]
+    }
+  ],
+  "footer": "Proxy = access control. Decorator = behavior enhancement. Both keep the same interface but serve different purposes.",
+  "output_path": "assets/design-pattern/images/proxy-overview.png"
+}

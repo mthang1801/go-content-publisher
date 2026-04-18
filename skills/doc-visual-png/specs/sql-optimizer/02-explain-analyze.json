@@ -1,0 +1,56 @@
+{
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "title": "EXPLAIN ANALYZE",
+  "subtitle": "Read the plan, find the bottleneck, fix the right node",
+  "eyebrow": "PostgreSQL Optimizer",
+  "palette_overrides": {
+    "background": "#0D1117",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#22C55E",
+    "accent_soft": "#1A2E1A",
+    "panel": "#161B22",
+    "border": "#2D4A2D"
+  },
+  "panels": [
+    {
+      "heading": "Seq Scan on large table",
+      "tag": "Signal",
+      "bullets": [
+        "rows > 10K without filter",
+        "Check: missing WHERE or index",
+        "Fix: add index on filter column"
+      ]
+    },
+    {
+      "heading": "Sort: external merge Disk",
+      "tag": "Signal",
+      "bullets": [
+        "work_mem too small for sort",
+        "Check: temp read/written in BUFFERS",
+        "Fix: SET work_mem higher for session"
+      ]
+    },
+    {
+      "heading": "Nested Loop × high rows",
+      "tag": "Signal",
+      "bullets": [
+        "Planner estimate vs actual off",
+        "Check: ANALYZE ran recently?",
+        "Fix: ANALYZE table, check stats target"
+      ]
+    },
+    {
+      "heading": "Hash Join: batches > 1",
+      "tag": "Signal",
+      "bullets": [
+        "Hash table spills to disk",
+        "Check: work_mem vs hash size",
+        "Fix: increase work_mem or reduce join set"
+      ]
+    }
+  ],
+  "footer": "EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) — always include BUFFERS to see I/O reality.",
+  "output_path": "assets/sql/optimizer/pictures/02-explain-analyze-decision.png"
+}

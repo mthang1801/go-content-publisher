@@ -1,0 +1,47 @@
+{
+  "content_type": "tech",
+  "visual_kind": "taxonomy_card",
+  "title": "Composite Pattern",
+  "subtitle": "Treat individual objects and compositions uniformly through one interface",
+  "eyebrow": "Structural Pattern",
+  "panels": [
+    {
+      "heading": "Component",
+      "tag": "Interface",
+      "bullets": [
+        "Shared contract: Size(), Render(), Contains()",
+        "Client uses this — never asks leaf vs composite",
+        "Operations are polymorphic across the tree"
+      ]
+    },
+    {
+      "heading": "Leaf",
+      "tag": "Terminal Node",
+      "bullets": [
+        "File, Widget, Permission",
+        "No children, self-contained",
+        "Implements Component directly"
+      ]
+    },
+    {
+      "heading": "Composite",
+      "tag": "Branch Node",
+      "bullets": [
+        "Directory, Section, PermissionGroup",
+        "Holds list of Component children",
+        "Delegates ops recursively to children"
+      ]
+    },
+    {
+      "heading": "Key Trap",
+      "tag": "Warning",
+      "bullets": [
+        "Don't force Add/Remove on Leaf",
+        "Don't type-switch leaf vs composite",
+        "Only use when domain IS a tree"
+      ]
+    }
+  ],
+  "footer": "Composite turns M×N type-checks into one recursive interface. If your structure isn't a tree, don't force it.",
+  "output_path": "assets/design-pattern/images/composite-overview.png"
+}

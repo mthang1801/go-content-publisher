@@ -1,0 +1,65 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/bot.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Source {
+  id        String   @id @default(cuid())
+  type      String   // "twitter" | "telegram"
+  handle    String   // @username or channel ID/username
+  name      String   // display name
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  items     ContentItem[]
+
+  @@unique([type, handle])
+}
+
+model ContentItem {
+  id             String    @id @default(cuid())
+  sourceId       String?
+  source         Source?   @relation(fields: [sourceId], references: [id])
+  externalId     String    @default("") // tweet ID or message ID (for dedup)
+  originalText   String
+  authorName     String    @default("Unknown")
+  sourceUrl      String?
+  crawledAt      DateTime  @default(now())
+
+  // Processing pipeline
+  status         String    @default("pending") // pending | processing | rewritten | published | failed | skipped
+  rewrittenText  String?
+  rewrittenTextEn String?  // English version for Twitter EN
+  tweetTextVI    String?   // Short tweet version Vietnamese
+  tweetTextEN    String?   // Short tweet version English
+  factCheckNote  String?
+  failReason     String?
+  tweetViId      String?   // Tweet ID on Vietnamese account
+  tweetEnId      String?   // Tweet ID on English account
+
+  // Publishing
+  publishedAt    DateTime?
+  publishedMsgId String?
+
+  @@unique([sourceId, externalId])
+  @@index([status])
+  @@index([crawledAt])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  level     String   // info | warn | error
+  module    String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

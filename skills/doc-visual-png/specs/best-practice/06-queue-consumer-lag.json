@@ -1,0 +1,44 @@
+{
+  "output_path": "assets/best-practice/images/06-queue-lag-router.png",
+  "content_type": "tech",
+  "visual_kind": "decision_map",
+  "palette_overrides": {
+    "background": "#ECFDF5",
+    "panel": "#FFFFFF",
+    "border": "#A7F3D0",
+    "shadow": "#6EE7B7",
+    "text": "#064E3B",
+    "muted": "#047857",
+    "accent": "#10B981",
+    "accent_soft": "#D1FAE5"
+  },
+  "panels": [
+    {
+      "tag": "Symptom",
+      "heading": "Consumer Lag Spikes",
+      "bullets": [
+        "Tỉ lệ đẩy data vào Queue vượt khả năng xử lý",
+        "Tin nhắn chờ hàng chục phút",
+        "Khách hàng không nhận được phản hồi"
+      ]
+    },
+    {
+      "tag": "Action 1",
+      "heading": "Scale Partitions",
+      "bullets": [
+        "Tăng số Kafka Partitions ngay lập tức",
+        "Mỗi partition tương ứng 1 worker limit",
+        "Giữ nguyên tắc Partiting Key chuẩn xác"
+      ]
+    },
+    {
+      "tag": "Action 2",
+      "heading": "Batch Processing",
+      "bullets": [
+        "Consumer lấy và commit theo Bulk/Batch",
+        "Giảm network overhead với Database",
+        "Xử lý 1000 message cùng 1 lúc hiệu quả"
+      ]
+    }
+  ]
+}
