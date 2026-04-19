@@ -63,6 +63,8 @@
 10. Run `run-content-bot.bat` or `content-bot.exe run`.
 11. Check `/healthz` and the worker logs.
 
+When you build a Windows package from the source repository, `release/build-windows.sh` now prefers `config/config.ini` if that file exists. If it does not exist, the script falls back to `release/config.example.ini`.
+
 `content-bot.exe show-runtime` prints the effective runtime shape without touching DB-backed `settings`, including:
 
 - app env and run flags

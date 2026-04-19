@@ -1706,6 +1706,8 @@ Or build the packaged Windows release layout:
 ./release/build-windows.sh
 ```
 
+The packaged files are written to `release/dist/content-publisher/`.
+
 That release folder includes:
 
 - `content-bot.exe`
