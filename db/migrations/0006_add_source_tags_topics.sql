@@ -1,0 +1,3 @@
+ALTER TABLE sources
+    ADD COLUMN IF NOT EXISTS tags text[] NOT NULL DEFAULT '{}',
+    ADD COLUMN IF NOT EXISTS topics text[] NOT NULL DEFAULT '{}';

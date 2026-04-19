@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-04-19
+- Pruned `config/config.example.ini` and `release/config.example.ini` down to bootstrap-only fields so DB-managed runtime keys such as `telegram_runtime`, `auto_publish`, `rewrite_provider`, feature flags, and scheduler intervals are no longer duplicated in operator samples.
+- Expanded operator docs with a config/settings responsibility matrix and restart guidance so `.env`/`config.ini` bootstrap values are clearly separated from DB-backed runtime policy.
+- Added a short operator quick-start flow for local binary, packaged executable, and Docker/Podman usage, covering bootstrap config, migrate, `telegram_runtime`, worker flags, and runtime verification.
+- Added an operator demo flow for the common end-to-end path `add source -> crawl once -> process once -> publish once -> inspect report`, including release-runbook notes for packaged handoff.
+- Added an operator-facing failure playbook for the main demo-path failures: crawl produces nothing, rewrite skips, Telegram publish does nothing, and Telegram target probe fails.
+- Added a short settings cookbook with `demo`, `safe-production`, and `twitter-only intake` presets, including explicit guidance that outbound Twitter-only mode is not yet a separate pipeline.
+- Added executable helper scripts under `scripts/` for the three main settings presets so operators can apply runtime policy bundles without replaying each `settings-set` command manually.
+- Added optional `config.ini` bootstrap support plus a unified `cmd/content-bot` binary, so operators can ship a single executable without removing the existing `api`, `worker`, `migrate`, and `cli` workflows.
+- Changed `docker-compose.yml` to remove the top-level Compose `name:` expression and pin the default network name for better `podman-compose` compatibility.
+- Added a lightweight `release/` packaging layout with `config.example.ini`, `README-run.txt`, and a Windows build script for single-executable operator handoff.
+- Added CLI command `report-content-ops` to summarize recent `rewritten`, manual duplicate `skipped`, and `published` items for operator-focused demos without manually scanning the full recent queue.
+- Fixed Telegram Bot API replies to sanitize invalid UTF-8 before `sendMessage`, preventing admin/manual ingest from failing with `Bad Request: strings must be encoded in UTF-8`.
+- Removed the dormant Telegram MTProto/public-crawl implementation from the active Go runtime, including the CLI entrypoint, bootstrap wiring, public crawl job, merge policy, and MTProto client package.
+- Retired obsolete Telegram public-crawl settings keys `telegram_merge_sources`, `telegram_merge_idle_seconds`, and `telegram_merge_max_seconds` through a cleanup migration so the runtime contract stays Bot API only.
+- Tuned rewrite duplicate handling for manual/admin content so near-duplicate demo prompts can still be rewritten, while exact normalized duplicates are still skipped before AI spend and exact recent reposts remain blocked at publish time.
+- Changed the project operating scope and docs to treat Telegram as Bot API only; `api_id`, `api_hash`, and `session` are no longer part of the recommended runtime contract.
+- Updated the `telegram_runtime` setting description and operator docs to focus on `bot_token`, `publish_targets`, `ingest_targets`, and `admin_user_ids`.
+- Added Telegram manual queue parity with the sample: `/add <text>` and authorized plain text in Bot API ingest targets now enqueue manual pending content.
+- Expanded `README.md` with Mermaid architecture diagrams, ERD, processing flows, sequence diagrams, content state machine documentation, and a fuller HTTP API specification grounded in the current Gin handlers and DTOs.
+
 ## 2026-04-18
 - Added this repository as the first reference consumer of a reusable Go service agent template.
 - Documented architecture principles, operating model, and roadmap in `README.md`.
@@ -14,3 +35,43 @@
 - Added one bundle skill per agent role, rewired role cards to use a single primary entry skill, and updated the skill map and team docs so role activation no longer depends on inline multi-skill expansion.
 - Added a design spec for migrating `public/content-bot-share` from TypeScript/Prisma to a Go/Gin/GORM foundation backed by Supabase Postgres.
 - Added a tracked change record and implementation plan for the first content-bot wave, including env placeholders, SQL migrations, Dockerfile, and Docker Compose deliverables.
+- Scaffolded the first Go codebase foundation with `cmd/api`, `cmd/worker`, `cmd/migrate`, initial `source` and `content` bounded contexts, config loading, Postgres bootstrap, and a SQL migration runner.
+- Added placeholder Supabase environment files, initial SQL migrations for `sources`, `content_items`, `settings`, and `logs`, plus a multi-stage Dockerfile and Docker Compose deployment file.
+- Verified `go test ./...` and `go build ./cmd/api ./cmd/worker ./cmd/migrate`; Docker verification remains pending because the local environment does not provide the `docker` CLI.
+- Added `cmd/cli` plus real Telegram Bot API and DeepSeek API connectivity clients for authenticated live checks using the current environment configuration.
+- Verified live connectivity to Supabase Postgres, Telegram Bot API, and DeepSeek API, and completed a create/list/delete smoke test for `sources` through the Gin HTTP API against Supabase.
+- Added explicit API DTO mapping plus handler tests so `source` and `content` responses now use stable lowercase JSON fields instead of exported Go field names.
+- Added manual content enqueue, manual rewrite override, and one-shot content job execution commands so the content pipeline can be exercised and recovered through the current admin surface.
+- Verified Telegram publish end-to-end against the configured supergroup and stored the published Telegram message ID back into Supabase; the real DeepSeek rewrite path currently reaches the vendor API but is blocked by upstream `402 Payment Required`.
+- Added a first real Telegram ingest slice using Bot API `getUpdates`, persisted crawler offset state in `settings`, wired the worker crawl loop to the new action, and added `cmd/cli ingest-telegram-once` for one-shot validation.
+- Verified the new Telegram ingest path against the live Supabase and Telegram configuration, created a real Telegram source record for `-1002451344189`, and confirmed the remaining blocker is Telegram returning zero updates for the current bot/source combination rather than a Go application failure.
+- Added topic-aware Telegram runtime config through `TELEGRAM_PUBLISH_TARGETS` and `TELEGRAM_INGEST_TARGETS` JSON arrays, with support for `message_thread_id` on publish and topic filtering on ingest.
+- Verified live publish into Telegram topic `thread_id=5` for `chat_id=-1002451344189`, and changed `published_msg_id` storage to a structured JSON array of per-target Telegram delivery results.
+- Added a Gemini rewrite provider alongside DeepSeek, wired provider selection through `REWRITE_PROVIDER`, and extended connectivity checks to report Gemini API status.
+- Verified Gemini API authentication live and completed a real `process-next` rewrite through Gemini, persisting the rewritten content back into Supabase.
+- Verified the Gemini rewrite path all the way through `publish-next` into Telegram topic `thread_id=5`, with per-target publish metadata stored in `published_msg_id`.
+- Added rewrite fallback orchestration so a failed primary provider retries once against the secondary provider before the content item is marked failed.
+- Reworked the `process-next` claim path so pending content is atomically claimed with row locking and `SKIP LOCKED`, preventing concurrent rewrite workers from processing the same pending item repeatedly.
+- Reworked the Telegram `publish-next` claim path so rewritten content is atomically claimed before publish, preventing concurrent publisher workers from sending the same Telegram post more than once.
+- Added a real Twitter client plus worker actions for Twitter crawl and Twitter publish, replacing the previous noop twitter publisher placeholder in the Go runtime bootstrap.
+- Added Twitter crawl support that caches X user IDs and per-source `since_id` checkpoints in `settings`, then enqueues new tweets from active `twitter` sources into Supabase-backed `content_items`.
+- Added Twitter publish support that prepares short tweet text from stored Vietnamese and English rewrite fields and persists `tweet_vi_id` / `tweet_en_id` results back into Supabase after successful posting.
+- Added CLI one-shot commands for `crawl-twitter-once` and `publish-twitter-next`, plus unit coverage for the new Twitter crawl and publish actions.
+- Verified live Twitter connectivity end-to-end: crawl now succeeds with the current bearer token, publish now succeeds with the current user-context credentials, and a real `tweet_vi_id` was persisted back into Supabase.
+- Extended `sources` with `last_crawled_at`, `last_check_at`, and `last_error`, then added repository/service support for source health tracking and active/inactive transitions.
+- Added a source revalidation worker action plus `revalidate-sources-once` CLI entrypoint so newly added sources are validated once, invalid sources are marked inactive, and inactive sources are only retried after a 24-hour delay.
+- Verified live source revalidation against the current Telegram/X source set, inactivating 9 unusable sources on the first pass and confirming a second immediate pass performs no rechecks because the 24-hour gate is enforced.
+- Added structured `tags/topics` on sources, a source metadata update endpoint, and runtime Twitter publish filters in `settings` so auto-post can be constrained by source type, source tags, source topics, and optional content keywords without hardcoded code changes.
+- Split queue staleness control into `pending_stale_after_seconds` and `rewritten_stale_after_seconds`, kept backward compatibility with `queue_stale_after_seconds`, and added `settings.description` so runtime keys are self-documented through the CLI and database.
+- Removed the legacy `queue_stale_after_seconds` runtime fallback and cleaned the setting from the database so queue aging now depends only on the split pending/rewritten settings.
+- Moved `enable_twitter_crawler` and `enable_rewrite_processor` into `settings`, taught bootstrap to honor them at runtime, and removed the duplicate env copies so those worker controls are managed from the database.
+- Moved `enable_telegram_crawler`, `enable_twitter_publish_vi`, and `enable_twitter_publish_en` into `settings`, then removed their duplicate env copies so the remaining worker feature controls are database-managed.
+- Added `settings.json_value`, seeded `telegram_runtime`, and moved Telegram Bot token, publish targets, ingest targets, admin IDs, and future MTProto fields into DB-backed JSON runtime config.
+- Replaced the stale generic Go-template README with content-bot-specific setup, operations, settings, CLI, API, demo flow, Docker, and parity roadmap documentation.
+- Added the parity completion execution plan for structured rewrite, Telegram admin bot, Telegram MTProto crawler, and documentation sync under `docs/superpowers/plans/2026-04-19-content-bot-parity-completion.md`.
+- Implemented structured rewrite parity for Gemini and DeepSeek responses, including JSON parsing for `rewrittenText`, `rewrittenTextEn`, `tweetVI`, `tweetEN`, `factCheckNote`, `shouldPublish`, and `reason`.
+- Updated content processing so `shouldPublish=false` becomes an expected skipped item with a recorded reason, while valid structured results persist the Telegram and Twitter-ready fields.
+- Added pre-rewrite and post-rewrite similarity duplicate detection with settings-backed thresholds to reduce unnecessary AI calls and avoid publishing repeated content.
+- Added Telegram admin bot commands inside the existing Bot API ingest loop, covering status, queue/recent views, source add/reactivate/deactivate, failed retry, item skip, pause/resume, persisted logs, and crawlnow without introducing a second update-offset consumer.
+- Changed Telegram publishing to read `settings.auto_publish` at runtime so admin `/pause` and `/resume` take effect without restarting the worker.
+- Added DB-backed scheduler interval settings for crawl, rewrite, Telegram publish, and Twitter publish loops, removed their duplicate `.env` entries, and updated `telegram_runtime` with MTProto API credentials for the upcoming public Telegram crawler.

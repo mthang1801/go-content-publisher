@@ -1,4 +1,7 @@
 .superpowers/
+.cache/
+.codex
+release/dist/
 tmp/
 dist/
 coverage/
@@ -6,4 +9,5 @@ coverage/
 *.out
 *.test
 *.local
+config/.env
 config/.env

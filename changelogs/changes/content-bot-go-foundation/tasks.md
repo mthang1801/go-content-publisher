@@ -1,13 +1,65 @@
 # Tasks: Content Bot Go Foundation
 
-- [ ] Initialize the Go module and dependency skeleton.
-- [ ] Add config loading plus `config/.env` and `config/.env.example`.
-- [ ] Add Supabase Postgres bootstrap and SQL migration runner.
-- [ ] Write the initial SQL migrations for `sources`, `content_items`, `settings`, and `logs`.
-- [ ] Implement the `source` bounded context.
-- [ ] Implement the `content` bounded context and pipeline statuses.
-- [ ] Add the initial Gin API surface.
-- [ ] Add the worker skeleton and noop integration ports.
-- [ ] Add `Dockerfile` and `docker-compose.yml`.
-- [ ] Run verification and sync progress/changelog.
+- [x] Initialize the Go module and dependency skeleton.
+- [x] Add config loading plus `config/.env` and `config/.env.example`.
+- [x] Add Supabase Postgres bootstrap and SQL migration runner.
+- [x] Write the initial SQL migrations for `sources`, `content_items`, `settings`, and `logs`.
+- [x] Implement the `source` bounded context.
+- [x] Implement the `content` bounded context and pipeline statuses.
+- [x] Add the initial Gin API surface.
+- [x] Add the worker skeleton and noop integration ports.
+- [x] Add `Dockerfile` and `docker-compose.yml`.
+- [x] Run verification and sync progress/changelog.
 
+## Verification Notes
+
+- `go test ./...` passed on 2026-04-18.
+- `go build ./cmd/api ./cmd/worker ./cmd/migrate` passed on 2026-04-18.
+- `go build ./cmd/api ./cmd/worker ./cmd/migrate ./cmd/cli` passed on 2026-04-18.
+- `go run ./cmd/migrate` passed on 2026-04-18 against the configured Supabase Postgres database.
+- `go run ./cmd/cli check-connections` passed on 2026-04-18 and confirmed:
+  - Supabase Postgres ping succeeded
+  - Telegram Bot API authentication succeeded via `getMe`
+  - DeepSeek API authentication succeeded via `GET /models`
+  - Gemini API authentication succeeded via `GET /v1beta/models`
+- Live API smoke test on Supabase passed on 2026-04-18:
+  - `POST /api/sources` created a temporary Telegram source
+  - `GET /api/sources` returned the created record
+  - `DELETE /api/sources/:type/:handle` removed the temporary record
+- Handler-level TDD for API DTOs passed on 2026-04-18:
+  - `go test ./internal/source/presentation/http ./internal/content/presentation/http`
+  - live source API responses now return lowercase JSON keys such as `id`, `handle`, and `created_at`
+- Content workflow seams were extended on 2026-04-18:
+  - `POST /api/content` now enqueues manual content items
+  - `POST /api/content/:id/manual-rewrite` now allows operator override when AI rewrite is blocked
+  - `go run ./cmd/cli process-next` and `go run ./cmd/cli publish-next` now exist for one-shot job execution
+- Telegram ingest slice was added on 2026-04-18:
+  - `go run ./cmd/cli ingest-telegram-once` now polls Telegram Bot API `getUpdates`, stores the offset in `settings`, and enqueues matching Telegram source messages into `content_items`
+  - the worker crawl loop now uses the real Telegram ingest action instead of a noop adapter
+  - live validation against Supabase and Telegram succeeded at the infrastructure level, but the configured `Coding` supergroup currently returns `updates=0`, so no content is enqueued until Telegram delivers updates for that bot/source combination
+- Telegram target configuration now supports multiple topic-aware targets on 2026-04-18:
+  - `TELEGRAM_PUBLISH_TARGETS` and `TELEGRAM_INGEST_TARGETS` accept JSON arrays such as `[{"chat_id":"-1002451344189","thread_id":5}]`
+  - publish now sends `message_thread_id` when configured and stores per-target publish results as JSON in `published_msg_id`
+  - ingest now filters updates by configured `chat_id` and `thread_id` before matching active Telegram sources
+- Real DeepSeek rewrite execution reached the external API but failed with `402 Payment Required`, indicating an account/billing blocker rather than an application-path failure.
+- Telegram publish flow succeeded end-to-end on 2026-04-18 after a manual rewrite override:
+  - content item `43b6b7d0-c2ac-4fa9-bb74-5fec9673945f` transitioned to `published`
+  - `published_msg_id` was stored as `139`
+- Topic-aware Telegram publish was verified live on 2026-04-18:
+  - content item `b14ddf75-adeb-4025-9dcc-7308d3375861` transitioned to `published`
+  - `published_msg_id` was stored as `[{"chat_id":"-1002451344189","thread_id":5,"message_id":"141"}]`
+- Gemini rewrite provider was added and verified on 2026-04-18:
+  - `REWRITE_PROVIDER=gemini` now routes `process-next` and the worker rewrite loop through Gemini instead of DeepSeek
+  - content item `a8ba5b7f-d43f-41eb-aa73-82fe6f08e920` transitioned from `pending` to `rewritten` through a live Gemini API call
+- Gemini end-to-end publish probe was verified on 2026-04-18:
+  - content item `a8ba5b7f-d43f-41eb-aa73-82fe6f08e920` transitioned from `rewritten` to `published`
+  - `published_msg_id` was stored as `[{"chat_id":"-1002451344189","thread_id":5,"message_id":"142"}]`
+- Rewrite fallback logic was added on 2026-04-18:
+  - when the primary rewrite provider fails, the worker now retries once against the secondary provider
+  - unit coverage now verifies primary success, secondary fallback on primary error, and combined error reporting when both providers fail
+  - live fallback success remains blocked by the current DeepSeek `402 Payment Required` condition, but the wrapped Gemini path still rewrites successfully in production configuration
+- `process-next` queue claim is now atomic on 2026-04-18:
+  - the rewrite worker no longer uses `find -> mark -> save` as separate steps for pending content items
+  - pending items are now claimed inside a database transaction with row locking and `SKIP LOCKED`, reducing duplicate processing when multiple workers or CLI calls run concurrently
+  - live verification showed concurrent `process-next` calls now split work across different items or return idle instead of rewriting the same item repeatedly
+- `docker compose config` could not be executed in this environment because `docker` is not installed.

@@ -21,6 +21,7 @@ Convert vague or multi-step requests into a narrow execution plan grounded in th
 - Review, verification, and tracking are mandatory, not optional polish.
 - The sample is expected to grow into multiple binaries: `cmd/api`, `cmd/worker`, `cmd/migrate`, and `cmd/cli`.
 - Planning must reflect what actually exists in the repo today, not imagined future code.
+- Telegram integration scope is Bot API only unless the user explicitly reopens MTProto work; do not plan around `api_id`, `api_hash`, or `session` as part of the default runtime contract.
 
 ## Trigger
 
@@ -78,6 +79,7 @@ Determine all of the following before choosing specialists:
 
 - task type: architecture, implementation, test, review, debug, db, devops, docs
 - affected runtime surfaces: HTTP, Postgres/GORM, Redis, worker flow, future broker flow
+- for Telegram surfaces, assume Bot API ingest/publish and admin commands only; treat MTProto/App ID work as out of scope unless the user asks for it explicitly
 - affected binaries: `api`, `worker`, `migrate`, `cli`
 - affected folders: `cmd/`, `internal/`, `pkg/`, `.agents/`, `docs/`, `changelogs/`
 - whether work is greenfield, bugfix, refactor, or governance/doc sync
