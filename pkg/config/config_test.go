@@ -85,6 +85,7 @@ func TestLoadFromINIFile(t *testing.T) {
 	t.Setenv("APP_NAME", "")
 	t.Setenv("APP_ENV", "")
 	t.Setenv("APP_LOG_LEVEL", "")
+	t.Setenv("APP_LOG_MAX_SIZE_MB", "")
 	t.Setenv("APP_AUTO_MIGRATE", "")
 	t.Setenv("APP_RUN_API", "")
 	t.Setenv("APP_RUN_WORKER", "")
@@ -104,6 +105,7 @@ func TestLoadFromINIFile(t *testing.T) {
 name=content-bot-go
 env=production
 log_level=warn
+log_max_size_mb=25
 auto_migrate=true
 run_api=true
 run_worker=false
@@ -138,6 +140,9 @@ ingest_targets=[{"chat_id":"-1002"}]
 	if !cfg.App.AutoMigrate {
 		t.Fatal("expected app auto migrate true")
 	}
+	if cfg.App.LogMaxSizeMB != 25 {
+		t.Fatalf("expected log max size 25MB, got %d", cfg.App.LogMaxSizeMB)
+	}
 	if cfg.App.RunWorker {
 		t.Fatal("expected app run worker false")
 	}
@@ -149,6 +154,37 @@ ingest_targets=[{"chat_id":"-1002"}]
 	}
 	if len(cfg.Telegram.PublishTargets) != 1 || cfg.Telegram.PublishTargets[0].ChatID != "-1001" {
 		t.Fatalf("unexpected publish targets: %#v", cfg.Telegram.PublishTargets)
+	}
+}
+
+func TestLoadFromINIFilePreservesEmptyHTTPPort(t *testing.T) {
+	t.Setenv("APP_NAME", "")
+	t.Setenv("DATABASE_URL", "")
+	t.Setenv("HTTP_PORT", "")
+
+	temp := t.TempDir()
+	path := filepath.Join(temp, "config.ini")
+	content := `
+[app]
+name=content-bot-go
+
+[http]
+port=
+
+[database]
+url=postgres://user:pass@example.com:5432/content_bot?sslmode=require
+`
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatalf("write ini file: %v", err)
+	}
+
+	cfg, err := Load(path)
+	if err != nil {
+		t.Fatalf("load config from ini: %v", err)
+	}
+
+	if cfg.HTTP.Port != "" {
+		t.Fatalf("expected empty HTTP port to be preserved, got %q", cfg.HTTP.Port)
 	}
 }
 
@@ -173,6 +209,98 @@ port=9191
 	}
 	if cfg.HTTP.Port != "7070" {
 		t.Fatalf("expected env port 7070 to win, got %s", cfg.HTTP.Port)
+	}
+}
+
+func TestLoadDetailsFromPathsTracksLoadedFiles(t *testing.T) {
+	t.Setenv("APP_NAME", "")
+	t.Setenv("DATABASE_URL", "")
+
+	temp := t.TempDir()
+	path := filepath.Join(temp, "config.ini")
+	content := `
+[app]
+name=content-bot-go
+
+[database]
+url=postgres://user:pass@example.com:5432/content_bot?sslmode=require
+`
+	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
+		t.Fatalf("write ini file: %v", err)
+	}
+
+	details, err := LoadDetailsFromPaths(path)
+	if err != nil {
+		t.Fatalf("load details from ini: %v", err)
+	}
+
+	if len(details.LoadedPaths) != 1 {
+		t.Fatalf("expected 1 loaded path, got %d", len(details.LoadedPaths))
+	}
+	if details.LoadedPaths[0] != path {
+		absolutePath, _ := filepath.Abs(path)
+		if details.LoadedPaths[0] != absolutePath {
+			t.Fatalf("expected loaded path %q or %q, got %q", path, absolutePath, details.LoadedPaths[0])
+		}
+	}
+}
+
+func TestRuntimeSummaryInfersSupabaseSessionPooler(t *testing.T) {
+	cfg := Config{
+		App: AppConfig{
+			Name:   "content-bot-go",
+			Env:    "production",
+			RunAPI: true,
+		},
+		HTTP: HTTPConfig{
+			Host: "0.0.0.0",
+			Port: "auto",
+		},
+		Database: DatabaseConfig{
+			URL:     "postgres://postgres.project-ref:secret@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require",
+			SSLMode: "require",
+		},
+	}
+
+	summary := cfg.RuntimeSummary([]string{"/tmp/config.ini"})
+	if summary.Database.Mode != "supabase_session_pooler" {
+		t.Fatalf("expected supabase session pooler mode, got %q", summary.Database.Mode)
+	}
+	if summary.Database.Target != "aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres" {
+		t.Fatalf("unexpected database target: %q", summary.Database.Target)
+	}
+	if summary.HTTP.PortMode != "auto" {
+		t.Fatalf("expected auto port mode, got %q", summary.HTTP.PortMode)
+	}
+	if len(summary.ConfigFiles) != 1 || summary.ConfigFiles[0] != "/tmp/config.ini" {
+		t.Fatalf("unexpected config files: %#v", summary.ConfigFiles)
+	}
+}
+
+func TestRuntimeSummaryInfersLocalSplitFieldDatabase(t *testing.T) {
+	cfg := Config{
+		App: AppConfig{Name: "content-bot-go"},
+		HTTP: HTTPConfig{
+			Host: "127.0.0.1",
+			Port: "8080",
+		},
+		Database: DatabaseConfig{
+			Host:    "127.0.0.1",
+			Port:    "5432",
+			Name:    "content_bot",
+			SSLMode: "disable",
+		},
+	}
+
+	summary := cfg.RuntimeSummary(nil)
+	if summary.Database.Mode != "local" {
+		t.Fatalf("expected local database mode, got %q", summary.Database.Mode)
+	}
+	if summary.Database.ConfigSource != "DATABASE_HOST/DATABASE_NAME" {
+		t.Fatalf("unexpected config source: %q", summary.Database.ConfigSource)
+	}
+	if summary.HTTP.PortMode != "fixed" {
+		t.Fatalf("expected fixed port mode, got %q", summary.HTTP.PortMode)
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -29,12 +30,13 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Name        string
-	Env         string
-	LogLevel    string
-	AutoMigrate bool
-	RunAPI      bool
-	RunWorker   bool
+	Name         string
+	Env          string
+	LogLevel     string
+	LogMaxSizeMB int
+	AutoMigrate  bool
+	RunAPI       bool
+	RunWorker    bool
 }
 
 type HTTPConfig struct {
@@ -119,17 +121,67 @@ type DockerConfig struct {
 	ComposeProject string
 }
 
+type LoadDetails struct {
+	Config      Config
+	LoadedPaths []string
+}
+
+type RuntimeSummary struct {
+	App         RuntimeAppSummary      `json:"app"`
+	HTTP        RuntimeHTTPSummary     `json:"http"`
+	Database    RuntimeDatabaseSummary `json:"database"`
+	ConfigFiles []string               `json:"config_files"`
+}
+
+type RuntimeAppSummary struct {
+	Name         string `json:"name"`
+	Env          string `json:"env"`
+	LogMaxSizeMB int    `json:"log_max_size_mb"`
+	AutoMigrate  bool   `json:"auto_migrate"`
+	RunAPI       bool   `json:"run_api"`
+	RunWorker    bool   `json:"run_worker"`
+}
+
+type RuntimeHTTPSummary struct {
+	Host       string `json:"host"`
+	PortConfig string `json:"port_config"`
+	PortMode   string `json:"port_mode"`
+}
+
+type RuntimeDatabaseSummary struct {
+	Target       string `json:"target"`
+	Host         string `json:"host"`
+	Port         string `json:"port"`
+	Name         string `json:"name"`
+	Mode         string `json:"mode"`
+	SSLMode      string `json:"ssl_mode"`
+	ConfigSource string `json:"config_source"`
+}
+
 func Load(paths ...string) (Config, error) {
+	details, err := LoadDetailsFromPaths(paths...)
+	if err != nil {
+		return Config{}, err
+	}
+	return details.Config, nil
+}
+
+func LoadDetailsFromPaths(paths ...string) (LoadDetails, error) {
+	loadedPaths := make([]string, 0, 4)
 	for _, path := range choosePaths(paths) {
 		if _, err := os.Stat(path); err == nil {
+			absolutePath := absolutePathOrOriginal(path)
+			if !containsPath(loadedPaths, absolutePath) {
+				loadedPaths = append(loadedPaths, absolutePath)
+			}
 			switch strings.ToLower(filepath.Ext(path)) {
 			case ".ini":
 				if err := loadINI(path); err != nil {
-					return Config{}, fmt.Errorf("load ini file %s: %w", path, err)
+					return LoadDetails{}, fmt.Errorf("load ini file %s: %w", path, err)
 				}
 			default:
 				if err := godotenv.Overload(path); err != nil {
-					return Config{}, fmt.Errorf("load env file %s: %w", path, err)
+					return LoadDetails{}, fmt.Errorf("load env file %s: %w", path, err)
 				}
 			}
 		}
@@ -137,16 +189,17 @@ func Load(paths ...string) (Config, error) {
 
 	cfg := Config{
 		App: AppConfig{
-			Name:        getOrDefault("APP_NAME", "content-bot-go"),
-			Env:         getOrDefault("APP_ENV", "development"),
-			LogLevel:    getOrDefault("APP_LOG_LEVEL", "info"),
-			AutoMigrate: mustBool("APP_AUTO_MIGRATE", false),
-			RunAPI:      mustBool("APP_RUN_API", true),
-			RunWorker:   mustBool("APP_RUN_WORKER", true),
+			Name:         getOrDefault("APP_NAME", "content-bot-go"),
+			Env:          getOrDefault("APP_ENV", "development"),
+			LogLevel:     getOrDefault("APP_LOG_LEVEL", "info"),
+			LogMaxSizeMB: mustInt("APP_LOG_MAX_SIZE_MB", 10),
+			AutoMigrate:  mustBool("APP_AUTO_MIGRATE", false),
+			RunAPI:       mustBool("APP_RUN_API", true),
+			RunWorker:    mustBool("APP_RUN_WORKER", true),
 		},
 		HTTP: HTTPConfig{
 			Host:         getOrDefault("HTTP_HOST", "0.0.0.0"),
-			Port:         getOrDefault("HTTP_PORT", "8080"),
+			Port:         getOrDefaultPreserveEmpty("HTTP_PORT", "8080"),
 			ReadTimeout:  mustDuration("HTTP_READ_TIMEOUT", "15s"),
 			WriteTimeout: mustDuration("HTTP_WRITE_TIMEOUT", "15s"),
 		},
@@ -214,12 +267,15 @@ func Load(paths ...string) (Config, error) {
 	}
 
 	if err := cfg.Validate(); err != nil {
-		return Config{}, err
+		return LoadDetails{}, err
 	}
 
 	cfg.Telegram.applyLegacyFallbacks()
 
-	return cfg, nil
+	return LoadDetails{
+		Config:      cfg,
+		LoadedPaths: loadedPaths,
+	}, nil
 }
 
 func optionalTime(key string) *time.Time {
@@ -309,7 +365,39 @@ func choosePaths(paths []string) []string {
 	if len(paths) > 0 {
 		return paths
 	}
-	return []string{"config/config.ini", "config.ini", "config/.env", ".env"}
+
+	defaults := []string{"config/config.ini", "config.ini", "config/.env", ".env"}
+	candidates := append([]string(nil), defaults...)
+
+	if executable, err := os.Executable(); err == nil {
+		executableDir := filepath.Dir(executable)
+		for _, path := range defaults {
+			candidate := filepath.Join(executableDir, path)
+			if containsPath(candidates, candidate) {
+				continue
+			}
+			candidates = append(candidates, candidate)
+		}
+	}
+
+	return candidates
+}
+
+func containsPath(paths []string, candidate string) bool {
+	for _, path := range paths {
+		if path == candidate {
+			return true
+		}
+	}
+	return false
+}
+
+func absolutePathOrOriginal(path string) string {
+	absolutePath, err := filepath.Abs(path)
+	if err != nil {
+		return path
+	}
+	return absolutePath
 }
 
 func getOrDefault(key, fallback string) string {
@@ -317,6 +405,14 @@ func getOrDefault(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func getOrDefaultPreserveEmpty(key, fallback string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return fallback
+	}
+	return strings.TrimSpace(value)
 }
 
 func mustInt(key string, fallback int) int {
@@ -460,6 +556,8 @@ func iniKeyToEnvKey(section, key string) (string, bool) {
 			return "APP_ENV", true
 		case "log_level":
 			return "APP_LOG_LEVEL", true
+		case "log_max_size_mb":
+			return "APP_LOG_MAX_SIZE_MB", true
 		case "auto_migrate":
 			return "APP_AUTO_MIGRATE", true
 		case "run_api":
@@ -509,4 +607,105 @@ func iniKeyToEnvKey(section, key string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+func (c Config) RuntimeSummary(loadedPaths []string) RuntimeSummary {
+	host, port, name, mode, configSource := c.Database.runtimeDetails()
+	return RuntimeSummary{
+		App: RuntimeAppSummary{
+			Name:         c.App.Name,
+			Env:          c.App.Env,
+			LogMaxSizeMB: c.App.LogMaxSizeMB,
+			AutoMigrate:  c.App.AutoMigrate,
+			RunAPI:       c.App.RunAPI,
+			RunWorker:    c.App.RunWorker,
+		},
+		HTTP: RuntimeHTTPSummary{
+			Host:       c.HTTP.Host,
+			PortConfig: c.HTTP.Port,
+			PortMode:   normalizeHTTPPortMode(c.HTTP.Port),
+		},
+		Database: RuntimeDatabaseSummary{
+			Target:       databaseTarget(host, port, name),
+			Host:         host,
+			Port:         port,
+			Name:         name,
+			Mode:         mode,
+			SSLMode:      c.Database.SSLMode,
+			ConfigSource: configSource,
+		},
+		ConfigFiles: append([]string(nil), loadedPaths...),
+	}
+}
+
+func normalizeHTTPPortMode(port string) string {
+	port = strings.TrimSpace(port)
+	if port == "" || port == "0" || strings.EqualFold(port, "auto") {
+		return "auto"
+	}
+	return "fixed"
+}
+
+func (c DatabaseConfig) runtimeDetails() (host, port, name, mode, configSource string) {
+	if strings.TrimSpace(c.URL) != "" {
+		host, port, name = parseDatabaseURL(c.URL)
+		mode = inferDatabaseMode(host, port)
+		return host, port, name, mode, "DATABASE_URL"
+	}
+
+	host = strings.TrimSpace(c.Host)
+	port = strings.TrimSpace(c.Port)
+	name = strings.TrimSpace(c.Name)
+	mode = inferDatabaseMode(host, port)
+	return host, port, name, mode, "DATABASE_HOST/DATABASE_NAME"
+}
+
+func parseDatabaseURL(raw string) (host, port, name string) {
+	parsed, err := url.Parse(strings.TrimSpace(raw))
+	if err != nil {
+		return "", "", ""
+	}
+
+	host = strings.TrimSpace(parsed.Hostname())
+	port = strings.TrimSpace(parsed.Port())
+	name = strings.TrimPrefix(strings.TrimSpace(parsed.Path), "/")
+	if port == "" {
+		port = "5432"
+	}
+	return host, port, name
+}
+
+func inferDatabaseMode(host, port string) string {
+	host = strings.ToLower(strings.TrimSpace(host))
+	port = strings.TrimSpace(port)
+
+	switch {
+	case host == "" && port == "":
+		return "unknown"
+	case host == "localhost" || host == "127.0.0.1" || host == "::1":
+		return "local"
+	case strings.HasSuffix(host, ".pooler.supabase.com") && port == "5432":
+		return "supabase_session_pooler"
+	case strings.HasSuffix(host, ".pooler.supabase.com") && port == "6543":
+		return "supabase_transaction_pooler"
+	case strings.HasSuffix(host, ".supabase.co"):
+		return "supabase_direct"
+	default:
+		return "custom"
+	}
+}
+
+func databaseTarget(host, port, name string) string {
+	parts := make([]string, 0, 2)
+	address := strings.TrimSpace(host)
+	if address != "" && strings.TrimSpace(port) != "" {
+		address = address + ":" + strings.TrimSpace(port)
+	}
+	if address != "" {
+		parts = append(parts, address)
+	}
+	if strings.TrimSpace(name) != "" {
+		parts = append(parts, strings.TrimSpace(name))
+	}
+	return strings.Join(parts, "/")
 }

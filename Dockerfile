@@ -11,7 +11,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/api ./cmd/api && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/worker ./cmd/worker && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/migrate ./cmd/migrate
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/migrate ./cmd/migrate && \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/cli ./cmd/cli
 
 FROM alpine:3.22
 
@@ -22,8 +23,9 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /out/api /app/api
 COPY --from=builder /out/worker /app/worker
 COPY --from=builder /out/migrate /app/migrate
+COPY --from=builder /out/cli /app/cli
 COPY --from=builder /src/db/migrations /app/db/migrations
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app/api"]
+CMD ["/app/api"]

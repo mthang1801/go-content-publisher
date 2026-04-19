@@ -73,7 +73,10 @@ func New() (*App, error) {
 		return nil, fmt.Errorf("load config: %w", err)
 	}
 
-	logger := obslogger.New(cfg.App.LogLevel)
+	logger := obslogger.New(cfg.App.LogLevel, cfg.App.LogMaxSizeMB)
+	if logFilePath := obslogger.LogFilePath(); strings.TrimSpace(logFilePath) != "" {
+		logger.Info("file logging enabled", "path", logFilePath)
+	}
 
 	gormDB, sqlDB, err := postgresdb.Open(cfg.Database)
 	if err != nil {
@@ -383,6 +386,9 @@ func applySecondsSettingOverride(ctx context.Context, settingRepo runtimeValueGe
 }
 
 func (a *App) RunAPI(ctx context.Context) error {
+	gin.DefaultWriter = obslogger.Output()
+	gin.DefaultErrorWriter = obslogger.Output()
+
 	router := gin.New()
 	router.Use(gin.Recovery())
 	router.GET("/healthz", func(c *gin.Context) {
@@ -394,16 +400,22 @@ func (a *App) RunAPI(ctx context.Context) error {
 	contenthttp.RegisterRoutes(api, contenthttp.NewHandler(a.ContentService))
 
 	server := &http.Server{
-		Addr:         a.Config.HTTP.Host + ":" + a.Config.HTTP.Port,
+		Addr:         httpListenAddress(a.Config.HTTP.Host, a.Config.HTTP.Port),
 		Handler:      router,
 		ReadTimeout:  a.Config.HTTP.ReadTimeout,
 		WriteTimeout: a.Config.HTTP.WriteTimeout,
 	}
 
+	listener, err := openHTTPListener(server, a.Config.HTTP.Host, a.Config.HTTP.Port)
+	if err != nil {
+		return err
+	}
+
 	errCh := make(chan error, 1)
 	go func() {
-		a.Logger.Info("api listening", "addr", server.Addr)
-		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		addr, port, healthzURL := describeHTTPListener(listener, a.Config.HTTP.Host)
+		a.Logger.Info("api listening", "addr", addr, "port", port, "healthz", healthzURL)
+		if err := server.Serve(listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			errCh <- err
 			return
 		}

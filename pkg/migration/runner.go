@@ -23,7 +23,12 @@ func (r Runner) Up(ctx context.Context, db *sql.DB) error {
 		return err
 	}
 
-	entries, err := os.ReadDir(r.Dir)
+	dir, err := resolveDir(r.Dir)
+	if err != nil {
+		return err
+	}
+
+	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return fmt.Errorf("read migration directory: %w", err)
 	}
@@ -46,7 +51,7 @@ func (r Runner) Up(ctx context.Context, db *sql.DB) error {
 			continue
 		}
 
-		contents, err := os.ReadFile(filepath.Join(r.Dir, file))
+		contents, err := os.ReadFile(filepath.Join(dir, file))
 		if err != nil {
 			return fmt.Errorf("read migration %s: %w", file, err)
 		}
@@ -72,6 +77,27 @@ func (r Runner) Up(ctx context.Context, db *sql.DB) error {
 	}
 
 	return nil
+}
+
+func resolveDir(dir string) (string, error) {
+	if filepath.IsAbs(dir) {
+		return dir, nil
+	}
+
+	candidates := []string{dir}
+	if executable, err := os.Executable(); err == nil {
+		candidates = append(candidates, filepath.Join(filepath.Dir(executable), dir))
+	}
+
+	for _, candidate := range candidates {
+		info, err := os.Stat(candidate)
+		if err != nil || !info.IsDir() {
+			continue
+		}
+		return candidate, nil
+	}
+
+	return "", fmt.Errorf("read migration directory: %s not found", dir)
 }
 
 func ensureMigrationTable(ctx context.Context, db *sql.DB) error {

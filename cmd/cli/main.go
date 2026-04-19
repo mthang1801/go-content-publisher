@@ -13,6 +13,9 @@ import (
 	contentdomain "go-content-bot/internal/content/domain"
 	sourcedomain "go-content-bot/internal/source/domain"
 	"go-content-bot/pkg/app/bootstrap"
+	"go-content-bot/pkg/buildinfo"
+	"go-content-bot/pkg/clihelp"
+	"go-content-bot/pkg/config"
 )
 
 func main() {
@@ -21,6 +24,46 @@ func main() {
 	if len(os.Args) > 1 {
 		command = os.Args[1]
 		args = os.Args[2:]
+	}
+
+	if isHelpCommand(command) {
+		fmt.Print(renderHelp())
+		return
+	}
+
+	if command == "check-connections" {
+		results, err := bootstrap.CheckConnectionsOnly(context.Background())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		encoded, err := json.MarshalIndent(results, "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(encoded))
+		return
+	}
+	if command == "show-runtime" {
+		details, err := config.LoadDetailsFromPaths()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		encoded, err := json.MarshalIndent(details.Config.RuntimeSummary(details.LoadedPaths), "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(encoded))
+		return
+	}
+	if command == "version" {
+		encoded, err := json.MarshalIndent(buildinfo.Current("cli.exe"), "", "  ")
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(encoded))
+		return
 	}
 
 	app, err := bootstrap.New()
@@ -34,17 +77,6 @@ func main() {
 	}()
 
 	switch command {
-	case "check-connections":
-		results, err := app.RunConnectionChecks(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		encoded, err := json.MarshalIndent(results, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(string(encoded))
 	case "process-next":
 		result, err := app.RunProcessNext(context.Background())
 		if err != nil {
@@ -268,6 +300,41 @@ func parseContentOpsLimit(args []string, fallback int) int {
 		return value
 	}
 	return fallback
+}
+
+func isHelpCommand(command string) bool {
+	switch command {
+	case "help", "-h", "--help":
+		return true
+	default:
+		return false
+	}
+}
+
+func renderHelp() string {
+	return clihelp.Render(clihelp.Document{
+		Binary:         "cli.exe",
+		Description:    "operator tool",
+		DefaultCommand: "check-connections",
+		Commands: []clihelp.Command{
+			{Name: "check-connections", Description: "check database and provider connectivity"},
+			{Name: "version", Description: "print build and version info"},
+			{Name: "show-runtime", Description: "print effective runtime config"},
+			{Name: "process-next", Description: "rewrite the next pending content item"},
+			{Name: "publish-next", Description: "publish the next rewritten content item"},
+			{Name: "ingest-telegram-once", Description: "run one Telegram ingest pass"},
+			{Name: "crawl-twitter-once", Description: "run one Twitter crawl pass"},
+			{Name: "revalidate-sources-once", Description: "recheck configured sources once"},
+			{Name: "publish-twitter-next", Description: "publish the next Twitter item"},
+			{Name: "probe-telegram-targets", Description: "send a probe message to publish targets"},
+			{Name: "report-twitter-sources", Description: "print current Twitter source report"},
+			{Name: "report-content-ops", Description: "print queue and publish report"},
+			{Name: "settings-get", Description: "read a runtime setting"},
+			{Name: "settings-set", Description: "write a string runtime setting"},
+			{Name: "settings-set-json", Description: "write a JSON runtime setting"},
+			{Name: "help", Description: "show this help"},
+		},
+	})
 }
 
 func buildContentOpsReport(items []contentdomain.ContentItem) contentOpsReport {

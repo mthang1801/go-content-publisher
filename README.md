@@ -81,6 +81,7 @@ Create `config/.env` from `config/.env.example`, then fill:
 APP_NAME=content-bot-go
 APP_ENV=development
 APP_LOG_LEVEL=info
+APP_LOG_MAX_SIZE_MB=10
 
 HTTP_HOST=0.0.0.0
 HTTP_PORT=8080
@@ -481,13 +482,7 @@ go run ./cmd/cli settings-get auto_publish
 ### Docker Or Podman Flow
 
 1. Fill `config/.env`.
-2. Run migrations once:
-
-```bash
-go run ./cmd/migrate
-```
-
-3. Set `telegram_runtime` and the worker flags:
+2. Set `telegram_runtime` and the worker flags:
 
 ```bash
 go run ./cmd/cli settings-set-json telegram_runtime '{"bot_token":"<telegram-bot-token>","publish_targets":[{"chat_id":"<telegram-chat-id>"}],"ingest_targets":[{"chat_id":"<telegram-chat-id>"}],"admin_user_ids":[]}'
@@ -496,24 +491,28 @@ go run ./cmd/cli settings-set enable_rewrite_processor true
 go run ./cmd/cli settings-set auto_publish true
 ```
 
-4. Start containers:
+3. Start containers:
 
 ```bash
-docker compose up -d --build
 podman-compose up -d --build
 ```
 
-5. Verify:
+4. Verify:
 
 ```bash
 curl http://127.0.0.1:8080/healthz
 podman-compose ps
 podman logs go-content-publisher_worker_1 --tail=100
+podman-compose --profile tools run --rm --no-deps cli /app/cli settings-get auto_publish
+podman-compose --profile tools run --rm --no-deps migrate /app/migrate
 ```
 
 Notes:
 
 - replace `chat_id` with a normal group ID or add `thread_id` for a forum topic
+- Podman Compose runs the containers on host networking so they can reuse the same direct Supabase URL that works on the host
+- host-side `go run` commands and containers both read `config/.env`
+- use the `cli` tool container to read or change settings in the same database configured by `config/.env`
 - only `auto_publish` is designed for live no-restart toggling; other settings changes should usually be followed by an API/worker restart
 - if you ship a packaged executable, the same flow applies but bootstrap values can live in `config.ini` instead of `config/.env`
 
@@ -1666,11 +1665,16 @@ docker build -t content-bot-go:latest .
 Run with Compose:
 
 ```bash
-docker compose up -d --build
 podman-compose up -d --build
 ```
 
 The local environment used during development may not always have Docker installed; verify Docker separately on the deployment host.
+
+The Podman compose stack uses host networking so containers can reach the same
+Supabase direct database URL as the host environment. If you later switch back
+to bridged container networking, use the Supabase Session pooler URL from the
+Connect panel instead of the direct database URL because the direct endpoint is
+IPv6-first.
 
 For Podman compatibility, the compose file no longer relies on a top-level Compose `name:` expression. The default network is pinned as `content-bot-go_default`, which avoids the `__-content-bot-go_default` project-name parsing issue seen in some `podman-compose` releases.
 
@@ -1681,6 +1685,8 @@ podman-compose ps
 podman logs go-content-publisher_api_1 --tail=100
 podman logs go-content-publisher_worker_1 --tail=100
 curl -s http://127.0.0.1:8080/healthz
+podman-compose --profile tools run --rm --no-deps cli /app/cli settings-get auto_publish
+podman-compose --profile tools run --rm --no-deps migrate /app/migrate
 podman-compose down
 ```
 
@@ -1693,6 +1699,20 @@ Build a Windows executable:
 ```bash
 GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -o content-bot.exe ./cmd/content-bot
 ```
+
+Or build the packaged Windows release layout:
+
+```bash
+./release/build-windows.sh
+```
+
+That release folder includes:
+
+- `content-bot.exe`
+- `cli.exe`
+- `config.ini`
+- `README.md`
+- `db/migrations/*.sql`
 
 Run locally with the unified binary:
 
@@ -1708,12 +1728,16 @@ go run ./cmd/content-bot run
 go run ./cmd/content-bot api
 go run ./cmd/content-bot worker
 go run ./cmd/content-bot migrate
+go run ./cmd/content-bot version
+go run ./cmd/content-bot show-runtime
+go run ./cmd/content-bot check-connections
 ```
 
 Default behavior:
 
 - `run` is the default command
 - it can start API and worker together in one process
+- `migrate`, `show-runtime`, and `check-connections` can run before the `settings` table exists
 - the old binaries still work exactly as before
 
 ## INI Config
@@ -1732,6 +1756,7 @@ config/.env
 - keep only bootstrap fields in `config.ini`, such as database connectivity, AI API keys, Twitter credentials, and unified process flags like `auto_migrate`, `run_api`, and `run_worker`
 - keep live runtime behavior in the `settings` table
 - do not duplicate DB-managed keys such as `telegram_runtime`, `auto_publish`, `rewrite_provider`, worker feature flags, or scheduler intervals in `config.ini`
+- for multi-instance packaged runs, set `HTTP_PORT` or `http.port` to `auto`, `0`, or blank to bind any free local port
 
 Sample file:
 
@@ -1746,6 +1771,12 @@ Important precedence:
 - DB `settings` still override the relevant runtime fields after bootstrap, as before
 
 `config/config.example.ini` intentionally omits DB-managed runtime keys so operators do not assume file edits will override `settings`.
+
+Supabase note:
+
+- if the host supports IPv6, the direct Supabase Postgres URL is fine
+- if the host or network is IPv4-only, use the Supabase Session pooler URL from the Connect panel instead of the direct database hostname
+- Supabase docs: https://supabase.com/docs/reference/postgres/connection-strings
 
 Quick operator rule:
 
